@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TaxBreakdown from '../../components/TaxBreakdown.astro';
+import { calculateTax, getSalaryPoints, formatGBP } from '../../lib/taxRules.js';
+
+export function getStaticPaths() {
+  return getSalaryPoints().map(salary => ({
+    params: { salary: String(salary) },
+    props: { salary }
+  }));
+}
+
+const { salary } = Astro.props;
+const result = calculateTax(salary);
+const salaryFmt = formatGBP(salary);
+---
+<BaseLayout
+  title={`£${salary.toLocaleString()} Salary — Take Home Pay After Tax (${result.taxYear})`}
+  description={`See exactly how much tax and National Insurance you pay on a ${salaryFmt} salary in the UK, and your take-home pay per month and year.`}
+>
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="/">Calculator</a></li>
+      <li class="breadcrumb-item active">{salaryFmt} salary</li>
+    </ol>
+  </nav>
+
+  <h1>{salaryFmt} Salary — Take Home Pay Breakdown</h1>
+  <p class="lead">Here's how much you take home from a {salaryFmt} annual salary in the UK after Income Tax and National Insurance, based on {result.taxYear} rates.</p>
+
+  <TaxBreakdown result={result} />
+
+  <h2 class="h5 mt-4">What this means</h2>
+  <p>
+    On a {salaryFmt} salary, you pay {formatGBP(result.incomeTax)} in Income Tax and {formatGBP(result.nationalInsurance)} in
+    National Insurance each year — leaving you with {formatGBP(result.takeHomeAnnual)} take-home pay, or roughly
+    {formatGBP(result.takeHomeMonthly)} a month. Your effective tax rate works out to {result.effectiveRate}% of your gross income.
+  </p>
+
+  <details class="mt-3">
+    <summary class="fw-bold">How is this calculated?</summary>
+    <p class="mt-2 small">
+      Income Tax is calculated after deducting your Personal Allowance ({formatGBP(result.personalAllowance)}),
+      then applying the Basic, Higher and Additional rate bands. National Insurance is calculated separately on
+      earnings above the primary threshold. These figures assume no pension contributions, student loan
+      deductions, or other adjustments.
+    </p>
+  </details>
+
+  <a href="/" class="btn btn-outline-primary mt-4">← Try a different salary</a>
+</BaseLayout>

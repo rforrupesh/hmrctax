@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Privacy Policy — TaxCalc UK">
+  <h1>Privacy Policy</h1>
+  <p class="text-muted">Last updated: {new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long' })}</p>
+
+  <h2 class="h5 mt-4">Information We Collect</h2>
+  <p>Salary figures entered into our calculator are processed entirely in your browser and are never sent to or stored on our servers.</p>
+  <p>If you contact us via our contact form, we collect your name, email address, and message content solely to respond to your enquiry.</p>
+
+  <h2 class="h5 mt-4">Cookies and Advertising</h2>
+  <p>This site may display advertisements served by third-party providers, including Google AdSense. These providers may use cookies to serve ads based on your prior visits to this or other websites.</p>
+  <p>You can opt out of personalised advertising by visiting Google's Ads Settings.</p>
+
+  <h2 class="h5 mt-4">Analytics</h2>
+  <p>We may use anonymised analytics tools to understand how visitors use this site, which helps us improve it. No personally identifiable information is collected through analytics.</p>
+
+  <h2 class="h5 mt-4">Third-Party Links</h2>
+  <p>Our site may contain links to external sites. We are not responsible for the privacy practices of those sites.</p>
+
+  <h2 class="h5 mt-4">Contact</h2>
+  <p>Questions about this policy can be sent via our <a href="/contact/">contact page</a>.</p>
+</BaseLayout>

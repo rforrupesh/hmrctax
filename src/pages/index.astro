@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSalaryPoints, formatGBP } from '../lib/taxRules.js';
+const popular = getSalaryPoints().filter(s => [20000, 25000, 30000, 35000, 40000, 50000, 60000, 80000, 100000].includes(s));
+---
+<BaseLayout title="UK Salary Tax Calculator 2024/25 — Free Income Tax & NI Calculator">
+  <h1>UK Salary Tax Calculator</h1>
+  <p class="lead">Enter your annual salary to see Income Tax, National Insurance and take-home pay instantly.</p>
+
+  <div class="card p-4 mb-4">
+    <label for="salaryInput" class="form-label fw-bold">Annual salary (£)</label>
+    <div class="input-group mb-3" style="max-width: 400px;">
+      <span class="input-group-text">£</span>
+      <input type="number" id="salaryInput" class="form-control" placeholder="e.g. 30000" min="0">
+      <button class="btn btn-primary" id="calcBtn">Calculate</button>
+    </div>
+    <div id="result"></div>
+  </div>
+
+  <h2 class="h4 mt-5">Popular salary breakdowns</h2>
+  <div class="row row-cols-2 row-cols-md-4 g-2 mb-5">
+    {popular.map(s => (
+      <div class="col">
+        <a href={`/tax-calculator/${s}-annually/`} class="btn btn-outline-secondary w-100">{formatGBP(s)}</a>
+      </div>
+    ))}
+  </div>
+
+  <script>
+    function calculateTax(salary) {
+      const rules = {
+        personalAllowance: 12570,
+        taperStart: 100000,
+        bands: [
+          { upTo: 50270, rate: 0.20 },
+          { upTo: 125140, rate: 0.40 },
+          { upTo: Infinity, rate: 0.45 }
+        ],
+        ni: { primaryThreshold: 12570, uel: 50270, mainRate: 0.08, upperRate: 0.02 }
+      };
+      let allowance = rules.personalAllowance;
+      if (salary > rules.taperStart) {
+        allowance = Math.max(0, rules.personalAllowance - Math.floor((salary - rules.taperStart) / 2));
+      }
+      let taxable = Math.max(0, salary - allowance);
+      let incomeTax = 0, lastCap = 0;
+      for (const band of rules.bands) {
+        const ceiling = band.upTo === Infinity ? Infinity : band.upTo - allowance;
+        if (taxable > lastCap) {
+          const slice = Math.min(taxable, ceiling) - lastCap;
+          if (slice > 0) incomeTax += slice * band.rate;
+        }
+        lastCap = ceiling;
+      }
+      let ni = 0;
+      if (salary > rules.ni.primaryThreshold) {
+        const uelSlice = Math.min(salary, rules.ni.uel) - rules.ni.primaryThreshold;
+        ni += Math.max(0, uelSlice) * rules.ni.mainRate;
+        if (salary > rules.ni.uel) ni += (salary - rules.ni.uel) * rules.ni.upperRate;
+      }
+      const takeHome = salary - incomeTax - ni;
+      return { incomeTax, ni, takeHome, allowance };
+    }
+
+    function fmt(n) {
+      return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format(n);
+    }
+
+    const btn = document.getElementById('calcBtn');
+    const input = document.getElementById('salaryInput');
+    const resultDiv = document.getElementById('result');
+
+    function runCalc() {
+      const val = parseFloat(input.value);
+      if (!val || val < 0 || isNaN(val)) {
+        resultDiv.innerHTML = '<div class="alert alert-danger mt-3">Please enter a valid salary amount (e.g. 30000).</div>';
+        return;
+      }
+      if (val > 10000000) {
+        resultDiv.innerHTML = '<div class="alert alert-warning mt-3">That salary looks unusually high — please double-check the figure.</div>';
+        return;
+      }
+      const r = calculateTax(val);
+      resultDiv.innerHTML = `
+        <table class="table table-bordered bg-white mt-3">
+          <tbody>
+            <tr><th>Personal Allowance</th><td>${fmt(r.allowance)}</td></tr>
+            <tr><th>Income Tax</th><td>${fmt(r.incomeTax)}</td></tr>
+            <tr><th>National Insurance</th><td>${fmt(r.ni)}</td></tr>
+            <tr class="table-success"><th>Take-home (annual)</th><td><strong>${fmt(r.takeHome)}</strong></td></tr>
+            <tr><th>Take-home (monthly)</th><td>${fmt(r.takeHome / 12)}</td></tr>
+          </tbody>
+        </table>`;
+    }
+
+    btn.addEventListener('click', runCalc);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') runCalc(); });
+  </script>
+</BaseLayout>
