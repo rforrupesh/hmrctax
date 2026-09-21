@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rforrupesh.github.io/hmrctax/sitemap-index.xml
