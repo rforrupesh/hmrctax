@@ -1,5 +1,6 @@
 ---
 const { title, description = 'Free UK salary tax calculator — Income Tax and National Insurance breakdown.' } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 <!DOCTYPE html>
 <html lang="en-GB">
@@ -25,16 +26,16 @@ const { title, description = 'Free UK salary tax calculator — Income Tax and N
 <body>
   <nav class="navbar navbar-expand-lg navbar-gov py-3">
     <div class="container">
-      <a class="navbar-brand" href="/">Tax<span>Calc</span> UK</a>
+      <a class="navbar-brand" href={base + "/"}>Tax<span>Calc</span> UK</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ms-auto gap-2">
-          <li class="nav-item"><a class="nav-link" href="/">Calculator</a></li>
-          <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="/contact/">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="/disclaimer/">Disclaimer</a></li>
+          <li class="nav-item"><a class="nav-link" href={base + "/"}>Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href={base + "/about/"}>About</a></li>
+          <li class="nav-item"><a class="nav-link" href={base + "/contact/"}>Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href={base + "/disclaimer/"}>Disclaimer</a></li>
         </ul>
       </div>
     </div>
@@ -53,11 +54,11 @@ const { title, description = 'Free UK salary tax calculator — Income Tax and N
           <p class="text-muted small">Figures are estimates for guidance only and are not financial advice.</p>
         </div>
         <div class="col-md-6 text-md-end">
-          <a href="/about/" class="me-3">About</a>
-          <a href="/contact/" class="me-3">Contact</a>
-          <a href="/privacy-policy/" class="me-3">Privacy Policy</a>
-          <a href="/terms/" class="me-3">Terms</a>
-          <a href="/disclaimer/">Disclaimer</a>
+          <a href={base + "/about/"} class="me-3">About</a>
+          <a href={base + "/contact/"} class="me-3">Contact</a>
+          <a href={base + "/privacy-policy/"} class="me-3">Privacy Policy</a>
+          <a href={base + "/terms/"} class="me-3">Terms</a>
+          <a href={base + "/disclaimer/"}>Disclaimer</a>
         </div>
       </div>
       <hr>

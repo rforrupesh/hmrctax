@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSalaryPoints, formatGBP } from '../lib/taxRules.js';
 const suggestions = getSalaryPoints().filter(s => [25000, 30000, 40000, 50000].includes(s));
+const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout title="404 — Page Not Found | TaxCalc UK">
   <div class="text-center py-5">
@@ -10,14 +11,14 @@ const suggestions = getSalaryPoints().filter(s => [25000, 30000, 40000, 50000].i
     <p class="text-muted">The salary page you're looking for might not exist, or the URL is incorrect.</p>
 
     <div class="mt-4">
-      <a href="/" class="btn btn-primary me-2">Go to Calculator</a>
+      <a href={base + "/"} class="btn btn-primary me-2">Go to Calculator</a>
     </div>
 
     <div class="mt-5">
       <p class="fw-bold">Try one of these instead:</p>
       <div class="d-flex justify-content-center gap-2 flex-wrap">
         {suggestions.map(s => (
-          <a href={`/tax-calculator/${s}-annually/`} class="btn btn-outline-secondary btn-sm">{formatGBP(s)} salary</a>
+          <a href={`${base}/tax-calculator/${s}-annually/`} class="btn btn-outline-secondary btn-sm">{formatGBP(s)} salary</a>
         ))}
       </div>
     </div>

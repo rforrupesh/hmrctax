@@ -13,6 +13,7 @@ export function getStaticPaths() {
 const { salary } = Astro.props;
 const result = calculateTax(salary);
 const salaryFmt = formatGBP(salary);
+const base = import.meta.env.BASE_URL;
 ---
 <BaseLayout
   title={`£${salary.toLocaleString()} Salary — Take Home Pay After Tax (${result.taxYear})`}
@@ -20,7 +21,7 @@ const salaryFmt = formatGBP(salary);
 >
   <nav aria-label="breadcrumb" class="mb-3">
     <ol class="breadcrumb small">
-      <li class="breadcrumb-item"><a href="/">Calculator</a></li>
+      <li class="breadcrumb-item"><a href={base + "/"}>Calculator</a></li>
       <li class="breadcrumb-item active">{salaryFmt} salary</li>
     </ol>
   </nav>
@@ -47,5 +48,5 @@ const salaryFmt = formatGBP(salary);
     </p>
   </details>
 
-  <a href="/" class="btn btn-outline-primary mt-4">← Try a different salary</a>
+  <a href={base + "/"} class="btn btn-outline-primary mt-4">← Try a different salary</a>
 </BaseLayout>
