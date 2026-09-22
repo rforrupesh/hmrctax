@@ -137,7 +137,37 @@ export async function getDominantColor(src) {
       const g = Math.round(bucketG[winner] / bucketWeight[winner]);
       const b = Math.round(bucketB[winner] / bucketWeight[winner]);
       const [h, s, l] = rgbToHsl(r, g, b);
-      return { r, g, b, h, s, l, css: `rgb(${r}, ${g}, ${b})` };
+      const primary = { r, g, b, h, s, l, css: `rgb(${r}, ${g}, ${b})` };
+
+      // Look for a genuine second color (e.g. a teal shirt next to a
+      // yellow background, green grass next to a red jacket) instead of
+      // only ever surfacing the single winning bucket. A bucket only
+      // qualifies if its hue is far enough from the winner's to actually
+      // read as a different color, and it carries a real share of the
+      // vote — not just noise a few pixels away from the winning hue.
+      const bucketAngle = 360 / BUCKETS;
+      let runnerUp = -1;
+      for (let i = 0; i < BUCKETS; i++) {
+        if (i === winner) continue;
+        const angDist = Math.min(
+          Math.abs(i - winner) * bucketAngle,
+          360 - Math.abs(i - winner) * bucketAngle
+        );
+        if (angDist < 45) continue; // too close to the winner's hue
+        if (bucketWeight[i] < bucketWeight[winner] * 0.35) continue; // too minor
+        if (runnerUp === -1 || bucketWeight[i] > bucketWeight[runnerUp]) runnerUp = i;
+      }
+
+      let secondary = null;
+      if (runnerUp !== -1) {
+        const r2 = Math.round(bucketR[runnerUp] / bucketWeight[runnerUp]);
+        const g2 = Math.round(bucketG[runnerUp] / bucketWeight[runnerUp]);
+        const b2 = Math.round(bucketB[runnerUp] / bucketWeight[runnerUp]);
+        const [h2, s2, l2] = rgbToHsl(r2, g2, b2);
+        secondary = { r: r2, g: g2, b: b2, h: h2, s: s2, l: l2, css: `rgb(${r2}, ${g2}, ${b2})` };
+      }
+
+      return { ...primary, secondary };
     } catch (err) {
       // Network/format issue — fall back to the default brand gradient,
       // but log so it's visible in the build output instead of silently
@@ -151,26 +181,91 @@ export async function getDominantColor(src) {
   return result;
 }
 
+// Unlike red or blue, yellow physically stops looking "yellow" once you
+// push its lightness down much past ~25-30% — it reads as olive/brown
+// instead, because yellow's own hue band is inherently high-lightness
+// (pure #FFFF00 is already L=50%, versus L=50% pure blue/red looking
+// "normal"). A flat 14% floor for every hue is what made the yellow
+// swatch look muddy while red/blue kept their character at the same
+// lightness. Push the floor up specifically around the yellow band and
+// taper back down to the normal floor away from it.
+function darkLightnessForHue(h) {
+  const BASE = 14;
+  const YELLOW_CENTER = 55;
+  const YELLOW_BOOST = 12; // up to 26% right at pure yellow
+  const YELLOW_SPREAD = 35; // degrees either side where the boost tapers off
+  const dist = Math.min(Math.abs(h - YELLOW_CENTER), 360 - Math.abs(h - YELLOW_CENTER));
+  const boost = Math.max(0, 1 - dist / YELLOW_SPREAD);
+  return BASE + boost * YELLOW_BOOST;
+}
+
 /**
- * Builds a vivid, readable hero gradient anchored to the image's dominant
- * hue. Works in HSL and forces saturation up rather than just darkening
- * the sampled RGB — darkening alone mutes a bright yellow/red toward a
- * muddy brown, which isn't what "vivid" should look like. Lightness is
- * still kept low enough that white text stays legible.
+ * Returns the ordered {offset, color} stops for the hero gradient, without
+ * committing to any particular CSS/canvas syntax. Both the browser-facing
+ * CSS gradient (heroGradientFrom, below) and the @napi-rs/canvas OG-image
+ * generator (scripts/generate-og-images.mjs) build their gradient from
+ * these same stops, so the yellow-lightness fix and the dual-hue fix live
+ * in exactly one place instead of being reimplemented per-consumer.
  */
-export function heroGradientFrom(color) {
+export function heroGradientStops(color) {
   if (!color) return null;
-  const { h, s } = color;
+  const { h, s, secondary } = color;
   // Grayscale-fallback colors have near-zero saturation — don't force
   // those vivid, or a genuinely neutral photo gets a weird tinted hero.
   if (s < 0.08) {
     const { r, g, b } = color;
     const dark = `rgb(${Math.round(r * 0.18)}, ${Math.round(g * 0.18)}, ${Math.round(b * 0.18)})`;
     const mid = `rgb(${Math.round(r * 0.55)}, ${Math.round(g * 0.55)}, ${Math.round(b * 0.55)})`;
-    return `linear-gradient(135deg, ${dark}, ${mid})`;
+    return [
+      { offset: 0, color: dark },
+      { offset: 1, color: mid },
+    ];
   }
+
   const sat = Math.max(65, Math.round(s * 100));
-  const dark = `hsl(${Math.round(h)}, ${sat}%, 14%)`;
-  const mid = `hsl(${Math.round(h)}, ${sat}%, 32%)`;
-  return `linear-gradient(135deg, ${dark}, ${mid})`;
+  const darkL = darkLightnessForHue(h);
+  const midL = darkL + 18;
+  const dark = `hsl(${Math.round(h)}, ${sat}%, ${Math.round(darkL)}%)`;
+  const mid = `hsl(${Math.round(h)}, ${sat}%, ${Math.round(midL)}%)`;
+
+  if (!secondary) {
+    return [
+      { offset: 0, color: dark },
+      { offset: 1, color: mid },
+    ];
+  }
+
+  // Give the secondary hue its own stops so it actually shows up in the
+  // gradient rather than being averaged/overridden away.
+  const sat2 = Math.max(65, Math.round(secondary.s * 100));
+  const darkL2 = darkLightnessForHue(secondary.h);
+  const midL2 = darkL2 + 18;
+  const dark2 = `hsl(${Math.round(secondary.h)}, ${sat2}%, ${Math.round(darkL2)}%)`;
+  const mid2 = `hsl(${Math.round(secondary.h)}, ${sat2}%, ${Math.round(midL2)}%)`;
+
+  return [
+    { offset: 0, color: dark },
+    { offset: 0.4, color: mid },
+    { offset: 0.6, color: mid2 },
+    { offset: 1, color: dark2 },
+  ];
+}
+
+/**
+ * Builds a vivid, readable CSS hero gradient anchored to the image's
+ * dominant hue (for use directly as a `background` value in Astro/CSS).
+ * Works in HSL and forces saturation up rather than just darkening the
+ * sampled RGB — darkening alone mutes a bright yellow/red toward a muddy
+ * brown, which isn't what "vivid" should look like. The "dark" stop's
+ * lightness floor also adapts to hue (see darkLightnessForHue) since
+ * yellow goes muddy/brown at a lightness red and blue are still fine at.
+ * When a genuine second hue was found in the image (e.g. a teal shirt
+ * against a yellow wall), it gets its own stop in the gradient instead of
+ * the whole hero being flattened to one color.
+ */
+export function heroGradientFrom(color) {
+  const stops = heroGradientStops(color);
+  if (!stops) return null;
+  const parts = stops.map(({ offset, color }) => `${color} ${Math.round(offset * 100)}%`);
+  return `linear-gradient(135deg, ${parts.join(', ')})`;
 }
