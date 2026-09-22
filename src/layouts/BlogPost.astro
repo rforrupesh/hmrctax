@@ -95,9 +95,65 @@ const dateFmt = (d?: Date) =>
 </Layout>
 
 <style>
-  .blog-article :global(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; }
+  /* Markdown produces bare HTML tags with no Bootstrap classes attached,
+     so table/link/code/etc. need their own styling here to match the
+     rest of the site (govgreen/govblack theme, same as Layout.astro). */
+  .blog-article :global(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .blog-article :global(h3) { font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
   .blog-article :global(p) { margin-bottom: 1rem; }
-  .blog-article :global(ul), .blog-article :global(ol) { margin-bottom: 1rem; }
+  .blog-article :global(ul), .blog-article :global(ol) { margin-bottom: 1rem; padding-left: 1.5rem; }
+  .blog-article :global(li) { margin-bottom: 0.35rem; }
+  .blog-article :global(a) { color: var(--govblue); text-decoration: underline; }
+  .blog-article :global(a:visited) { color: #4c2c92; }
+  .blog-article :global(strong) { font-weight: 700; }
+
+  .blog-article :global(blockquote) {
+    border-left: 4px solid var(--govblue);
+    background: var(--govgrey);
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--govblack);
+  }
+  .blog-article :global(blockquote p:last-child) { margin-bottom: 0; }
+
+  .blog-article :global(code) {
+    background: var(--govgrey);
+    border: 1px solid var(--govborder);
+    padding: 0.1rem 0.35rem;
+    font-size: 0.9em;
+  }
+  .blog-article :global(pre) {
+    background: var(--govblack);
+    color: #fff;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+  .blog-article :global(pre code) { background: none; border: none; padding: 0; color: inherit; }
+
+  .blog-article :global(hr) { border: none; border-top: 1px solid var(--govborder); margin: 2rem 0; }
+
+  .blog-article :global(img) { max-width: 100%; height: auto; }
+
+  /* Tables: reproduce Bootstrap's .table .table-sm look for bare markdown tables */
+  .blog-article :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .blog-article :global(th),
+  .blog-article :global(td) {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--govborder);
+    text-align: left;
+  }
+  .blog-article :global(thead th) {
+    border-bottom: 2px solid var(--govblack);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .blog-article :global(tbody tr:nth-child(even)) { background: var(--govgrey); }
 </style>
 
 <script>

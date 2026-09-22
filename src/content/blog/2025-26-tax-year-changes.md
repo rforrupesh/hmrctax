@@ -33,6 +33,12 @@ Class 1 employee National Insurance is charged at:
 - **8%** on earnings between £12,570 and £50,270 a year
 - **2%** on earnings above £50,270
 
+| Band | Rate | On earnings |
+|---|---|---|
+| Below Personal Allowance | 0% | Up to £12,570 |
+| Employee NI (main rate) | 8% | £12,570 – £50,270 |
+| Employee NI (upper rate) | 2% | Above £50,270 |
+
 National Insurance is calculated per pay period (weekly or monthly), not as a single annual figure, so your exact deduction can vary slightly depending on how your pay is structured across the year — for example, if you get a bonus in one month.
 
 ## Student loan repayments
