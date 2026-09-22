@@ -42,7 +42,28 @@ export async function getDominantColor(src) {
 
   const result = await (async () => {
     try {
-      const img = await loadImage(src);
+      let img;
+      if (/^https?:\/\//i.test(src)) {
+        // @napi-rs/canvas's own URL loader has no User-Agent and no
+        // timeout, so some CDNs (Unsplash included) silently hang or
+        // refuse it. Fetch it ourselves first, with a real UA and a
+        // timeout, then hand loadImage a raw buffer instead of a URL.
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        try {
+          const res = await fetch(src, {
+            signal: controller.signal,
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; hmrctax-build/1.0)' },
+          });
+          if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${res.statusText} for ${src}`);
+          const buf = Buffer.from(await res.arrayBuffer());
+          img = await loadImage(buf);
+        } finally {
+          clearTimeout(timeout);
+        }
+      } else {
+        img = await loadImage(src);
+      }
       const SIZE = 32;
       const canvas = createCanvas(SIZE, SIZE);
       const ctx = canvas.getContext('2d');
@@ -67,8 +88,11 @@ export async function getDominantColor(src) {
       const g = Math.round(gSum / wSum);
       const b = Math.round(bSum / wSum);
       return { r, g, b, css: `rgb(${r}, ${g}, ${b})` };
-    } catch {
-      // Network/format issue — fall back to the default brand gradient.
+    } catch (err) {
+      // Network/format issue — fall back to the default brand gradient,
+      // but log so it's visible in the build output instead of silently
+      // showing the wrong hero color.
+      console.warn(`[dominantColor] Could not sample "${src}":`, err?.message || err);
       return null;
     }
   })();
