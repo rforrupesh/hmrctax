@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL;
 ---
 <Layout title="Privacy Policy | hmrctax.co.uk" description="Privacy policy for hmrctax.co.uk.">
   <main class="container py-4 pb-5">
     <h1>Privacy Policy</h1>
     <p style="max-width:65ch;">This calculator runs entirely in your browser. The salary figures you enter are not sent to, or stored on, our servers.</p>
     <p style="max-width:65ch;">We may use third-party services such as analytics and advertising providers, which can collect standard technical data (such as browser type and IP address) in line with their own privacy policies.</p>
-    <p style="max-width:65ch;">If you have any questions about this policy, please <a href="/contact/">contact us</a>.</p>
+    <p style="max-width:65ch;">If you have any questions about this policy, please <a href={`${base}contact/`}>contact us</a>.</p>
   </main>
 </Layout>
