@@ -256,8 +256,7 @@ const heroGradient = heroGradientFrom(dominantColor);
     position: relative;
     background: linear-gradient(135deg, var(--govblack), var(--govblue));
     color:#fff;
-    height: 280px;
-    overflow: hidden;
+    min-height: 280px;
   }
   .post-hero-inner{
     display: flex;
@@ -265,6 +264,7 @@ const heroGradient = heroGradientFrom(dominantColor);
     justify-content: center;
     position: relative;
     z-index: 2;
+    min-height: 280px;
   }
   .post-hero-inner.has-thumb{
     padding-right: 44%;

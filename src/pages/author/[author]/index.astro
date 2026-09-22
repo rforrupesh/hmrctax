@@ -29,12 +29,12 @@ const { name, posts } = Astro.props;
 ---
 <Layout title={`${name} | salary-calc.co.uk`} description={`Tax guides written by ${name} on salary-calc.co.uk.`}>
   <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
-    <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Author</p>
+    <p class="small text-muted mb-4"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Author</p>
 
     <div class="d-flex align-items-center gap-3 mb-4">
       <span class="author-avatar-lg">{initials(name)}</span>
       <div>
-        <h1 class="mb-1" style="font-family: Georgia, 'Times New Roman', serif; font-size:1.9rem;">{name}</h1>
+        <h1 class="mb-1">{name}</h1>
         <p class="small text-muted mb-0">Writer at salary-calc.co.uk &middot; {posts.length} guide{posts.length === 1 ? '' : 's'} published</p>
       </div>
     </div>
