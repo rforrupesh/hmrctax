@@ -1,19 +1,32 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PostGrid from '../../components/PostGrid.astro';
+import CategoryFilter from '../../components/CategoryFilter.astro';
+import { slugify, categoryOf } from '../../lib/blog.js';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).sort(
   (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
 );
+
+const categoryMap = new Map();
+for (const post of posts) {
+  const label = categoryOf(post);
+  const slug = slugify(label);
+  categoryMap.set(slug, { slug, label: label.replace(/-/g, ' '), count: (categoryMap.get(slug)?.count || 0) + 1 });
+}
+const categories = Array.from(categoryMap.values()).sort((a, b) => a.label.localeCompare(b.label));
 ---
 <Layout title="UK Tax Guides | hmrctax.co.uk" description="UK tax guides and explainers — tax codes, National Insurance, and yearly rate changes.">
   <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
     <h1 class="blog-index-heading">Tax Guides</h1>
+
+    {categories.length > 1 && <CategoryFilter categories={categories} />}
+
     <PostGrid posts={posts} />
   </main>
 </Layout>
 
 <style>
-  .blog-index-heading{ font-family: Georgia, "Times New Roman", serif; font-size:2.4rem; margin-bottom:0.5rem; }
+  .blog-index-heading{ font-family: Georgia, "Times New Roman", serif; font-size:2.4rem; margin-bottom:1rem; }
 </style>

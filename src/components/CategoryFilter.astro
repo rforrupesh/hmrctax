@@ -1,0 +1,56 @@
+---
+// Renders "All" + one pill per category. Filtering happens client-side
+// (all posts are already on the page — this just shows/hides them), so it
+// works with zero backend and stays in sync automatically as categories
+// change, since `categories` is computed fresh from the posts at build time.
+const { categories } = Astro.props;
+---
+<div class="category-filter d-flex flex-wrap gap-2 mb-4" role="group" aria-label="Filter guides by category">
+  <button type="button" class="category-pill active" data-category="all">All</button>
+  {categories.map((c) => (
+    <button type="button" class="category-pill" data-category={c.slug}>
+      {c.label} <span class="category-pill-count">{c.count}</span>
+    </button>
+  ))}
+</div>
+
+<style>
+  .category-pill{
+    border:2px solid var(--govblack);
+    background:#fff;
+    color:var(--govblack);
+    font-size:0.85rem;
+    font-weight:600;
+    padding:0.4rem 0.9rem;
+    border-radius:999px !important;
+    cursor:pointer;
+    text-transform:capitalize;
+  }
+  .category-pill:hover{ background:var(--govgrey); }
+  .category-pill.active{ background:var(--govblack); border-color:var(--govblack); color:#fff; }
+  .category-pill-count{ opacity:0.7; font-weight:400; }
+</style>
+
+<script>
+  const pills = document.querySelectorAll('.category-pill');
+  const items = document.querySelectorAll('.post-grid-item');
+  const emptyMsg = document.getElementById('post-grid-empty');
+
+  pills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const selected = pill.getAttribute('data-category');
+
+      pills.forEach((p) => p.classList.remove('active'));
+      pill.classList.add('active');
+
+      let visibleCount = 0;
+      items.forEach((item) => {
+        const matches = selected === 'all' || item.getAttribute('data-category') === selected;
+        item.style.display = matches ? '' : 'none';
+        if (matches) visibleCount++;
+      });
+
+      if (emptyMsg) emptyMsg.style.display = visibleCount === 0 ? '' : 'none';
+    });
+  });
+</script>
