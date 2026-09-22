@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { withBase } from '../../lib/url.js';
+import { BUILD_ID } from '../../lib/build-id.js';
 import Calculator from '../../components/Calculator.astro';
 import { calculateTax, fmt, getSalaryList } from '../../lib/tax.js';
 
@@ -15,49 +16,113 @@ export async function getStaticPaths() {
 const { amount } = Astro.props;
 const result = calculateTax(amount);
 
-// Vary the intro paragraph so pages aren't near-duplicate content
+const hourly = Math.round((result.weekly / 40) * 100) / 100;
+
 let angle;
 if (result.tax === 0 && result.ni === 0) {
-  angle = `Since ${fmt(amount)} is below the UK Personal Allowance of £12,570, you don't pay any Income Tax or National Insurance on this income — you keep all of it.`;
+  angle = `you don't pay any Income Tax or National Insurance on this salary, since it's below the £12,570 Personal Allowance — you keep all of it`;
 } else if (amount <= 50270) {
-  angle = `At this salary you pay the Basic Rate of Income Tax (20%) on earnings above the £12,570 Personal Allowance, plus National Insurance at 8%.`;
+  angle = `you pay the Basic Rate of Income Tax (20%) on earnings above the £12,570 Personal Allowance, plus 8% National Insurance`;
 } else if (amount <= 100000) {
-  angle = `Part of this salary falls into the Higher Rate band (40%), which starts at £50,270. National Insurance drops to 2% on earnings above £50,270.`;
+  angle = `part of this salary falls into the Higher Rate band (40%), which starts at £50,270, and National Insurance drops to 2% above that threshold`;
 } else if (amount <= 125140) {
-  angle = `Above £100,000, your tax-free Personal Allowance starts to shrink by £1 for every £2 earned — meaning your effective tax rate on this portion of income is higher than the headline 40% rate.`;
+  angle = `your tax-free Personal Allowance shrinks by £1 for every £2 earned above £100,000, so your effective tax rate on this portion is higher than the headline 40%`;
 } else {
-  angle = `At this level your Personal Allowance is fully lost, and any income above £125,140 is taxed at the Additional Rate of 45%.`;
+  angle = `your Personal Allowance is fully lost at this level, and income above £125,140 is taxed at the Additional Rate of 45%`;
 }
 
-// Related salaries (nearby values from the master list) for internal linking
+const kLabel = amount % 1000 === 0 ? `£${amount / 1000}k` : fmt(amount);
+
 const allSalaries = getSalaryList();
 const idx = allSalaries.indexOf(amount);
 const related = [allSalaries[idx - 2], allSalaries[idx - 1], allSalaries[idx + 1], allSalaries[idx + 2]].filter(Boolean);
 
 const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | hmrctax.co.uk`;
 const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
-const ogImage = withBase(`og/${amount}-annually.png`);
+const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
 ---
 <Layout title={pageTitle} description={pageDesc} ogImage={ogImage}>
   <main class="container py-4 pb-5">
     <p class="small text-muted mb-2"><a href={withBase()}>Home</a> &gt; <a href={withBase(`tax-calculator/`)}>Tax Calculator</a> &gt; {fmt(amount)} a year</p>
 
-    <h1>{fmt(amount)} After Tax UK</h1>
-    <p class="lead" style="max-width:60ch;">If you earn <strong>{fmt(amount)}</strong> a year in the UK, here's what you'll actually take home in the 2025/26 tax year.</p>
+    <div class="d-flex align-items-center gap-3 mb-2">
+      <div style="width:48px; height:48px; background:var(--govgreen); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" stroke="#fff" stroke-width="2"/>
+          <line x1="3" y1="9" x2="21" y2="9" stroke="#fff" stroke-width="2"/>
+          <line x1="8" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2.5"/>
+          <line x1="12" y1="13" x2="12" y2="13" stroke="#fff" stroke-width="2.5"/>
+          <line x1="16" y1="13" x2="16" y2="13" stroke="#fff" stroke-width="2.5"/>
+          <line x1="8" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2.5"/>
+          <line x1="12" y1="17" x2="12" y2="17" stroke="#fff" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <h1 class="mb-0">Tax Calculator for {kLabel}</h1>
+    </div>
+    <p class="lead" style="max-width:65ch;">This calculator estimates the Income Tax and National Insurance deducted from a <strong>{fmt(amount)}</strong> salary each week, month and year, for the 2025/26 UK tax year.</p>
 
-    <div class="result-panel p-4 my-4">
-      <div class="small opacity-75">Your estimated take-home pay per year</div>
-      <div class="figure">{fmt(result.net)}</div>
-      <div class="small mt-1 opacity-75">{fmt(result.tax)} Income Tax • {fmt(result.ni)} National Insurance</div>
+    <h2 class="h6 fw-bold text-uppercase mt-4" style="color:#505a5f; letter-spacing:0.03em;">Your estimation — Tax year 2025/26</h2>
+
+    <div class="table-responsive mt-2 mb-4">
+      <table class="table table-bordered mb-0" style="border-color:var(--govblack);">
+        <thead>
+          <tr style="background:var(--govgrey);">
+            <th></th>
+            <th class="text-end">Yearly</th>
+            <th class="text-end">Monthly</th>
+            <th class="text-end">Weekly</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fw-bold">Gross salary</td>
+            <td class="text-end">{fmt(amount)}</td>
+            <td class="text-end">{fmt(amount/12)}</td>
+            <td class="text-end">{fmt(amount/52)}</td>
+          </tr>
+          <tr>
+            <td><span class="swatch" style="background:#1d70b8;"></span> Income Tax</td>
+            <td class="text-end">{fmt(result.tax)}</td>
+            <td class="text-end">{fmt(result.tax/12)}</td>
+            <td class="text-end">{fmt(result.tax/52)}</td>
+          </tr>
+          <tr>
+            <td><span class="swatch" style="background:#5694ca;"></span> National Insurance</td>
+            <td class="text-end">{fmt(result.ni)}</td>
+            <td class="text-end">{fmt(result.ni/12)}</td>
+            <td class="text-end">{fmt(result.ni/52)}</td>
+          </tr>
+          <tr style="background:var(--govgrey);">
+            <td class="fw-bold"><span class="swatch" style="background:#00703c;"></span> Take home pay</td>
+            <td class="text-end fw-bold">{fmt(result.net)}</td>
+            <td class="text-end fw-bold">{fmt(result.monthly)}</td>
+            <td class="text-end fw-bold">{fmt(result.weekly)}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="zero-note mb-4">
-      <strong>How this is worked out:</strong> {angle}
-    </div>
+    <h2 class="h5 fw-bold mt-5 mb-2">Calculation details</h2>
+    <p style="max-width:65ch;">On a {fmt(amount)} salary, your take home pay will be <strong>{fmt(result.net)}</strong> after tax and National Insurance. This equates to <strong>{fmt(result.monthly)}</strong> per month and <strong>{fmt(result.weekly)}</strong> per week. If you work 5 days a week, this is {fmt(result.daily)} per day, or £{hourly.toFixed(2)} per hour at 40 hours a week.</p>
+    <p style="max-width:65ch;">At this salary, {angle}.</p>
 
-    <figure class="mb-4">
+    <details class="mt-3 mb-4">
+      <summary>What assumptions does this calculation make?</summary>
+      <ul class="small text-muted mt-2" style="max-width:65ch;">
+        <li>You are not a company director</li>
+        <li>Pay is paid in equal instalments during the tax year</li>
+        <li>You are under the State Pension age</li>
+        <li>You do not pay Scottish Income Tax (toggle this below if you do)</li>
+        <li>National Insurance is based on Class 1, standard category A</li>
+        <li>Tax code assumed to be the standard 1257L (one job or pension)</li>
+        <li>Take-home pay does not include pension contributions unless set below</li>
+      </ul>
+      <p class="small text-muted" style="max-width:65ch;">This figure is for guidance only and does not constitute financial advice. Rates are based on published <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC thresholds</a> for the 2025/26 tax year.</p>
+    </details>
+
+    <figure class="mb-5">
       <img
-        src={withBase(`og/${amount}-annually.png`)}
+        src={withBase(`og/${amount}-annually.png?v=${BUILD_ID}`)}
         alt={`${fmt(amount)} after tax UK — take-home pay summary: ${fmt(result.net)} per year, ${fmt(result.tax)} Income Tax, ${fmt(result.ni)} National Insurance`}
         width="1200"
         height="630"
@@ -65,61 +130,20 @@ const ogImage = withBase(`og/${amount}-annually.png`);
         class="img-fluid"
         style="border:2px solid var(--govblack); max-width:100%; height:auto;"
       />
-      <figcaption class="small text-muted mt-2">Share this: {fmt(amount)} after tax UK — right-click to save or share the image.</figcaption>
+      <figcaption class="small text-muted mt-2">Share this: {fmt(amount)} after tax UK</figcaption>
     </figure>
 
-    <div class="row g-3 mb-4">
-      <div class="col-6 col-md-3">
-        <div class="stat-box">
-          <div class="small text-muted">Yearly</div>
-          <div class="fw-bold fs-5">{fmt(result.net)}</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-box">
-          <div class="small text-muted">Monthly</div>
-          <div class="fw-bold fs-5">{fmt(result.monthly)}</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-box">
-          <div class="small text-muted">Weekly</div>
-          <div class="fw-bold fs-5">{fmt(result.weekly)}</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-box">
-          <div class="small text-muted">Daily (5-day week)</div>
-          <div class="fw-bold fs-5">£{result.daily.toFixed(2)}</div>
-        </div>
-      </div>
-    </div>
-
-    <h2 class="h4 fw-bold mt-5 mb-3">Full breakdown</h2>
-    <table class="table table-sm">
-      <thead>
-        <tr><th>Item</th><th class="text-end">Yearly</th><th class="text-end">Monthly</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Gross income</td><td class="text-end">{fmt(amount)}</td><td class="text-end">{fmt(amount/12)}</td></tr>
-        <tr><td>Personal Allowance used</td><td class="text-end">{fmt(Math.min(amount, result.personalAllowance))} of {fmt(result.personalAllowance)}</td><td class="text-end">—</td></tr>
-        <tr><td>Income Tax</td><td class="text-end">{fmt(result.tax)}</td><td class="text-end">{fmt(result.tax/12)}</td></tr>
-        <tr><td>National Insurance</td><td class="text-end">{fmt(result.ni)}</td><td class="text-end">{fmt(result.ni/12)}</td></tr>
-        <tr class="fw-bold"><td>Take-home pay</td><td class="text-end">{fmt(result.net)}</td><td class="text-end">{fmt(result.monthly)}</td></tr>
-      </tbody>
-    </table>
-
-    <h2 class="h4 fw-bold mt-5 mb-3">Try a different salary</h2>
+    <h2 class="h5 fw-bold mt-5 mb-3">Try a different salary</h2>
     <Calculator prefill={amount} />
 
     {related.length > 0 && (
       <>
-        <h2 class="h4 fw-bold mt-5 mb-3">Related salaries</h2>
-        <div class="row row-cols-2 row-cols-md-4 g-2">
+        <h2 class="h5 fw-bold mt-5 mb-3">Related salaries</h2>
+        <div class="d-flex flex-wrap gap-2">
           {related.map((s) => (
-            <div class="col">
-              <a href={withBase(`tax-calculator/${s}-annually/`)}>{fmt(s)} a year</a>
-            </div>
+            <a href={withBase(`tax-calculator/${s}-annually/`)} class="d-inline-block fw-bold text-decoration-none px-3 py-1" style="background:#fff; border:2px solid var(--govblack); color:var(--govblack); font-size:0.9rem;">
+              {fmt(s)} a year
+            </a>
           ))}
         </div>
       </>
