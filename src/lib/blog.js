@@ -30,6 +30,15 @@ export function authorOf(post) {
   return post.data.author || 'hmrctax team';
 }
 
+// Simple word-count based estimate, same rough math most blogs use
+// (~200 words per minute). post.body is the raw markdown string that
+// Astro content-collection entries expose without needing render().
+export function readTimeOf(post) {
+  const words = (post.body || '').trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+  return `${minutes} min read`;
+}
+
 const PALETTES = [
   ['#00703c', '#1d70b8'],
   ['#1d70b8', '#0b0c0c'],

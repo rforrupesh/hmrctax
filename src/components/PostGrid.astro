@@ -1,41 +1,19 @@
 ---
 import { withBase } from '../lib/url.js';
-import { formatDate, initials, slugify, categoryOf, authorOf, paletteFor } from '../lib/blog.js';
+import { slugify, categoryOf } from '../lib/blog.js';
 
 const { posts } = Astro.props;
 ---
-<div class="row g-4 g-lg-5 mt-2" id="post-grid">
-  {posts.map((p, i) => {
-    const [c1, c2] = paletteFor(i);
+<div class="row g-4 g-lg-4 mt-2" id="post-grid">
+  {posts.map((p) => {
     const category = categoryOf(p);
-    const author = authorOf(p);
     return (
       <div class="col-12 col-md-6 col-lg-4 post-grid-item" data-category={slugify(category)}>
-        <div class="blog-card h-100 d-flex flex-column">
-          <a href={withBase(`tax-guides/${p.slug}/`)} class="d-block text-decoration-none">
-            <div class="blog-card-thumb d-flex align-items-center justify-content-center" style={`background:linear-gradient(135deg, ${c1}, ${c2});`}>
-              <span>{initials(p.data.title)}</span>
-            </div>
-          </a>
-          <div class="blog-card-body flex-grow-1 d-flex flex-column">
-            <p class="blog-card-meta small mb-2">
-              {formatDate(p.data.publishDate)}
-              {' '}&middot;{' '}
-              <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="blog-card-tag text-capitalize">{category.replace(/-/g, ' ')}</a>
-            </p>
-            <a href={withBase(`tax-guides/${p.slug}/`)} class="d-block text-decoration-none">
-              <h2 class="blog-card-title mb-2">{p.data.title}</h2>
-            </a>
-            <p class="blog-card-excerpt small mb-0">{p.data.description}</p>
-            <div class="blog-card-author d-flex align-items-center gap-2 mt-4">
-              <span class="blog-card-avatar">{initials(author)}</span>
-              <a href={withBase(`author/${slugify(author)}/`)} class="small text-decoration-none">
-                <span class="d-block fw-semibold" style="color:var(--govblack);">{author}</span>
-                <span class="d-block" style="font-size:0.75rem; color:#505a5f;">Writer</span>
-              </a>
-            </div>
-          </div>
-        </div>
+        <a href={withBase(`tax-guides/${p.slug}/`)} class="blog-card h-100 d-flex flex-column text-decoration-none">
+          <span class="blog-card-pill text-capitalize">{category.replace(/-/g, ' ')}</span>
+          <h2 class="blog-card-title mb-2 mt-2">{p.data.title}</h2>
+          <p class="blog-card-excerpt small mb-0">{p.data.description}</p>
+        </a>
       </div>
     );
   })}
@@ -43,48 +21,33 @@ const { posts } = Astro.props;
 <p class="text-muted mt-4" id="post-grid-empty" style="display:none;">No guides in this category yet.</p>
 
 <style>
-  .blog-card-thumb{
-    height:190px;
-    width:100%;
-    border-radius:14px !important;
-    overflow:hidden;
-    margin-bottom:1.1rem;
+  .blog-card{
+    background: rgba(0,112,60,0.06);
+    border-radius:10px !important;
+    padding:1.5rem;
+    color:inherit;
   }
-  .blog-card-thumb span{
-    font-size:2.75rem;
-    font-weight:700;
+  .blog-card:hover{ background: rgba(0,112,60,0.11); }
+  .blog-card-pill{
+    display:inline-block;
+    align-self:flex-start;
+    background:var(--govblack);
     color:#fff;
-    font-family: Georgia, serif;
-  }
-  .blog-card-body{ min-height:0; }
-  .blog-card-meta{ color:#505a5f; font-size:0.8rem; margin-top:0; }
-  .blog-card-tag{ color:#505a5f; text-decoration:underline; }
-  .blog-card-tag:hover{ color:var(--govblue); }
-  .blog-card-title{
-    font-family: Georgia, "Times New Roman", serif;
+    font-size:0.7rem;
     font-weight:700;
-    font-size:1.15rem;
-    line-height:1.35;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    padding:0.25rem 0.65rem;
+    border-radius:999px !important;
+  }
+  .blog-card-title{
+    font-weight:800;
+    font-size:1.25rem;
+    line-height:1.3;
     color:var(--govblack);
   }
-  .blog-card:hover .blog-card-title{ color:var(--govblue); text-decoration:underline; }
   .blog-card-excerpt{
-    color:#505a5f;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-  .blog-card-author{
-    border-top:1px solid var(--govborder);
-    padding-top:1rem;
-    margin-top:auto !important;
-  }
-  .blog-card-avatar{
-    width:32px; height:32px; flex:0 0 auto;
-    display:flex; align-items:center; justify-content:center;
-    background:var(--govblack); color:#fff;
-    border-radius:50% !important;
-    font-size:0.7rem; font-weight:700;
+    color:#3d4449;
+    line-height:1.45;
   }
 </style>
