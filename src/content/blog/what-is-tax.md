@@ -2,7 +2,7 @@
 title: "What is Tax"
 description: "know about tax uk."
 publishDate: 2025-04-06
-image: "/images/what-is-tax.jpg"
+image: "./images/what-is-tax.jpg"
 tags: ["tax guide", ]
 takeaways:
   - "Tax is money collected by government to fund public services like the NHS, schools and roads."
