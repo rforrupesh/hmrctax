@@ -55,6 +55,19 @@ const ogImage = `${base}og/${amount}-annually.png`;
       <strong>How this is worked out:</strong> {angle}
     </div>
 
+    <figure class="mb-4">
+      <img
+        src={`${base}og/${amount}-annually.png`}
+        alt={`${fmt(amount)} after tax UK — take-home pay summary: ${fmt(result.net)} per year, ${fmt(result.tax)} Income Tax, ${fmt(result.ni)} National Insurance`}
+        width="1200"
+        height="630"
+        loading="lazy"
+        class="img-fluid"
+        style="border:2px solid var(--govblack); max-width:100%; height:auto;"
+      />
+      <figcaption class="small text-muted mt-2">Share this: {fmt(amount)} after tax UK — right-click to save or share the image.</figcaption>
+    </figure>
+
     <div class="row g-3 mb-4">
       <div class="col-6 col-md-3">
         <div class="stat-box">
