@@ -42,6 +42,66 @@ const related = [...differentCategory, ...sameCategory].slice(0, 3);
 const toc = headings.filter((h) => h.depth === 2);
 
 const pageUrl = new URL(withBase(`tax-guides/${post.slug}/`), Astro.site).toString();
+const siteUrl = new URL(withBase(), Astro.site).toString();
+const logoUrl = new URL(withBase(`favicon.svg`), Astro.site).toString();
+const postImageUrl = post.data.image
+  ? new URL(/^https?:\/\//i.test(post.data.image) ? post.data.image : withBase(post.data.image), Astro.site).toString()
+  : null;
+
+const schemaGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}#website`,
+      url: siteUrl,
+      name: 'hmrctax.co.uk',
+      publisher: { '@id': `${siteUrl}#organization` },
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}#organization`,
+      name: 'hmrctax.co.uk',
+      url: siteUrl,
+      logo: {
+        '@type': 'ImageObject',
+        '@id': `${siteUrl}#logo`,
+        url: logoUrl,
+        contentUrl: logoUrl,
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+        { '@type': 'ListItem', position: 2, name: 'Tax Guides', item: new URL(withBase('tax-guides/'), Astro.site).toString() },
+        { '@type': 'ListItem', position: 3, name: title, item: pageUrl },
+      ],
+    },
+    ...(postImageUrl
+      ? [{
+          '@type': 'ImageObject',
+          '@id': `${pageUrl}#primaryimage`,
+          url: postImageUrl,
+          contentUrl: postImageUrl,
+        }]
+      : []),
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: title,
+      description,
+      isPartOf: { '@id': `${siteUrl}#website` },
+      ...(postImageUrl ? { primaryImageOfPage: { '@id': `${pageUrl}#primaryimage` } } : {}),
+      breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+      datePublished: publishDate ? new Date(publishDate).toISOString() : undefined,
+      dateModified: (updatedDate ? new Date(updatedDate) : publishDate ? new Date(publishDate) : undefined)?.toISOString(),
+      inLanguage: 'en-GB',
+    },
+  ],
+};
 
 const dateFmt = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -50,6 +110,7 @@ const dominantColor = post.data.image ? await getDominantColor(post.data.image) 
 const heroGradient = heroGradientFrom(dominantColor);
 ---
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
   <div class="post-hero" style={heroGradient ? `background: ${heroGradient};` : ''}>
     <div class={`container py-4 h-100 post-hero-inner${post.data.image ? ' has-thumb' : ''}`}>
       <p class="post-hero-breadcrumb small mb-3">
