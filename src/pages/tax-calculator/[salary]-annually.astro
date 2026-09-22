@@ -58,6 +58,36 @@ const donutData = donutSegments.map((s) => {
 });
 const takeHomePct = amount > 0 ? Math.round((result.net / amount) * 100) : 0;
 
+// FAQ variables
+const taxYear = '2025/26';
+const totalDeductions = result.tax + result.ni;
+const totalDeductionPct = amount > 0 ? Math.round((totalDeductions / amount) * 100) : 0;
+const incomeTaxRatePct = result.taxRows.length ? Math.round(result.taxRows[result.taxRows.length - 1].rate * 100) : 0;
+const niRatePct = result.niRows.length ? Math.round(result.niRows[0].rate * 100) : 0;
+
+const faqs = [
+  {
+    q: `What percentage of ${fmt(amount)} do I take home?`,
+    a: `After the estimated Income Tax and National Insurance, you keep approximately ${takeHomePct}% of a ${fmt(amount)} gross annual salary. Your estimated total deductions represent around ${totalDeductionPct}% of your gross pay.`,
+  },
+  {
+    q: `What tax rate applies to a ${fmt(amount)} salary?`,
+    a: `The applicable Income Tax rate depends on how much of your taxable income falls into each tax band. For this calculation, the estimated Income Tax is ${fmt(result.tax)}, with the applicable marginal tax band shown as ${incomeTaxRatePct}%.`,
+  },
+  {
+    q: `What National Insurance rate applies to ${fmt(amount)}?`,
+    a: `For a standard employee, the relevant Class 1 National Insurance rate is ${niRatePct}% on earnings within the applicable band. Earnings above the Upper Earnings Limit are generally charged at 2% for 2026/27.`,
+  },
+  {
+    q: `How much of my ${fmt(amount)} salary goes to tax and National Insurance?`,
+    a: `Your estimated Income Tax and National Insurance total ${fmt(totalDeductions)} from a ${fmt(amount)} gross salary. That represents approximately ${totalDeductionPct}% of your annual gross pay.`,
+  },
+  {
+    q: `What assumptions does this calculation make?`,
+    a: null,
+  },
+];
+
 // Bar segments (same proportions, rendered as a horizontal bar)
 const barSegments = donutSegments.map((s) => ({ ...s, pct: amount > 0 ? (s.v / amount) * 100 : 0 }));
 
@@ -190,19 +220,34 @@ const bandRows = [
     <p style="max-width:65ch;">On a {fmt(amount)} salary, your take home pay will be <strong>{fmt(result.net)}</strong> after tax and National Insurance. This equates to <strong>{fmt(result.monthly)}</strong> per month and <strong>{fmt(result.weekly)}</strong> per week. If you work 5 days a week, this is {fmt(result.daily)} per day, or £{hourly.toFixed(2)} per hour at 40 hours a week.</p>
     <p style="max-width:65ch;">At this salary, {angle}.</p>
 
-    <details class="mt-3 mb-4">
-      <summary>What assumptions does this calculation make?</summary>
-      <ul class="small text-muted mt-2" style="max-width:65ch;">
-        <li>You are not a company director</li>
-        <li>Pay is paid in equal instalments during the tax year</li>
-        <li>You are under the State Pension age</li>
-        <li>You do not pay Scottish Income Tax (toggle this below if you do)</li>
-        <li>National Insurance is based on Class 1, standard category A</li>
-        <li>Tax code assumed to be the standard 1257L (one job or pension)</li>
-        <li>Take-home pay does not include pension contributions unless set below</li>
-      </ul>
-      <p class="small text-muted" style="max-width:65ch;">This figure is for guidance only and does not constitute financial advice. Rates are based on published <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC thresholds</a> for the 2025/26 tax year.</p>
-    </details>
+    <h2 class="h5 fw-bold mt-5 mb-3">Frequently asked questions</h2>
+    <div class="mb-4" style="max-width:65ch;">
+      {faqs.slice(0, 4).map((f) => (
+        <details class="mt-2 mb-2">
+          <summary class="fw-bold">{f.q}</summary>
+          <p class="small text-muted mt-2 mb-0">{f.a}</p>
+        </details>
+      ))}
+
+      <details class="mt-2 mb-2">
+        <summary class="fw-bold">What assumptions does this calculation make?</summary>
+        <p class="small text-muted mt-2 mb-1">This calculator uses the following standard assumptions for the {taxYear} tax year:</p>
+        <ul class="small text-muted mt-1">
+          <li>You are an employee with one main job.</li>
+          <li>You use the standard 1257L tax code.</li>
+          <li>The calculation includes Income Tax and employee National Insurance.</li>
+          <li>You are below State Pension age.</li>
+          <li>No workplace pension contributions are included unless selected.</li>
+          <li>No student loan repayments are included unless selected.</li>
+          <li>Bonuses, overtime and other additional income are not included by default.</li>
+          <li>Benefits, salary sacrifice and other deductions are not included unless specified.</li>
+          <li>Scottish Income Tax rates are applied when Scotland is selected.</li>
+          <li>Your actual payslip may differ because your personal tax and payroll circumstances can be different.</li>
+        </ul>
+        <p class="small text-muted mb-0">This figure is for guidance only and does not constitute financial advice. Rates are based on published <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC thresholds</a> for the {taxYear} tax year.</p>
+      </details>
+    </div>
+
 
     <figure class="mb-5">
       <img
