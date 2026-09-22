@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import { withBase } from '../../lib/url.js';
 import { BUILD_ID } from '../../lib/build-id.js';
-import Calculator from '../../components/Calculator.astro';
 import { calculateTax, fmt, getSalaryList } from '../../lib/tax.js';
 
 export async function getStaticPaths() {
@@ -133,8 +132,12 @@ const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
       <figcaption class="small text-muted mt-2">Share this: {fmt(amount)} after tax UK</figcaption>
     </figure>
 
-    <h2 class="h5 fw-bold mt-5 mb-3">Try a different salary</h2>
-    <Calculator prefill={amount} />
+    <div class="p-4 text-center mb-5" style="background:var(--govgrey); border:2px solid var(--govblack);">
+      <p class="fw-bold mb-3">Want to check a different salary?</p>
+      <a href={withBase()} class="btn fw-bold" style="background:var(--govgreen); color:#fff; border:2px solid var(--govgreen); padding:0.6rem 1.5rem;">
+        Use the Income Tax calculator
+      </a>
+    </div>
 
     {related.length > 0 && (
       <>
