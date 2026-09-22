@@ -33,6 +33,7 @@ const pages = [
 ];
 
 const pagesXml = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="${url('sitemap.xsl')}"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages.map((p) => `  <url><loc>${url(p)}</loc></url>`).join('\n')}
 </urlset>
@@ -47,6 +48,7 @@ const calcPages = [
 ];
 
 const calcXml = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="${url('sitemap.xsl')}"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${calcPages.map((p) => `  <url><loc>${url(p)}</loc></url>`).join('\n')}
 </urlset>
@@ -54,6 +56,7 @@ ${calcPages.map((p) => `  <url><loc>${url(p)}</loc></url>`).join('\n')}
 
 // ---- 3. Sitemap index ----
 const indexXml = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="${url('sitemap.xsl')}"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>${url('sitemap-pages.xml')}</loc></sitemap>
   <sitemap><loc>${url('tax-calculator.xml')}</loc></sitemap>
