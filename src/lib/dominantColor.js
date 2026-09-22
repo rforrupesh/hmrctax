@@ -81,22 +81,42 @@ export async function getDominantColor(src) {
       const { data } = ctx.getImageData(0, 0, SIZE, SIZE);
 
       let rSum = 0, gSum = 0, bSum = 0, wSum = 0;
+      let rSumFallback = 0, gSumFallback = 0, bSumFallback = 0, wSumFallback = 0;
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i], g = data[i + 1], b = data[i + 2], a = data[i + 3];
         if (a < 128) continue;
         const [, s, l] = rgbToHsl(r, g, b);
-        // Weight saturated, mid-brightness pixels higher so a dominant
-        // color (e.g. a red jacket) outweighs flat grey/black background.
-        const weight = 0.15 + s * (1 - Math.abs(l - 0.5) * 1.4);
+        // Saturation gets an exponential boost and a tiny baseline, so
+        // grey/black/white pixels (s≈0) barely count even when they make
+        // up most of the image — a small colorful accent (a yellow
+        // pencil, a red logo) should win over a dominant neutral desk or
+        // black laptop screen, not get averaged away by it.
+        const weight = Math.pow(s, 2) * (1 - Math.abs(l - 0.5) * 1.2) + 0.01;
         rSum += r * weight;
         gSum += g * weight;
         bSum += b * weight;
         wSum += weight;
+        // Fallback average (old-style, gentler) in case the whole image
+        // is genuinely neutral (grayscale photo) and no colorful pixel
+        // exists to latch onto.
+        const fw = 0.15 + s * (1 - Math.abs(l - 0.5) * 1.4);
+        rSumFallback += r * fw;
+        gSumFallback += g * fw;
+        bSumFallback += b * fw;
+        wSumFallback += fw;
       }
-      if (wSum === 0) return null;
-      const r = Math.round(rSum / wSum);
-      const g = Math.round(gSum / wSum);
-      const b = Math.round(bSum / wSum);
+      // If barely any saturated color was found (truly grayscale image),
+      // fall back to the softer neutral-tolerant average instead of
+      // producing a near-random tiny-sample color.
+      const useFallback = wSum < 2;
+      const finalWSum = useFallback ? wSumFallback : wSum;
+      const finalRSum = useFallback ? rSumFallback : rSum;
+      const finalGSum = useFallback ? gSumFallback : gSum;
+      const finalBSum = useFallback ? bSumFallback : bSum;
+      if (finalWSum === 0) return null;
+      const r = Math.round(finalRSum / finalWSum);
+      const g = Math.round(finalGSum / finalWSum);
+      const b = Math.round(finalBSum / finalWSum);
       return { r, g, b, css: `rgb(${r}, ${g}, ${b})` };
     } catch (err) {
       // Network/format issue — fall back to the default brand gradient,
