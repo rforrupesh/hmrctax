@@ -8,12 +8,12 @@
   "scripts": {
     "dev": "astro dev",
     "og": "node scripts/generate-og-images.mjs",
-    "build": "npm run og && astro build",
+    "sitemaps": "node scripts/generate-sitemaps.mjs",
+    "build": "npm run og && npm run sitemaps && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.2.1",
     "@napi-rs/canvas": "^0.1.65",
     "astro": "^5.7.0",
     "bootstrap": "^5.3.3"
