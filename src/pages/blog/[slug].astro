@@ -1,20 +1,26 @@
 ---
-// Renders one page per file in src/content/blog/ — nothing to update here
-// when a new post is added, getStaticPaths picks it up automatically.
+// Redirects any old /blog/{slug}/ URL (from before the /tax-guides/ rename)
+// to its new home, so old links and any indexed Google results still work.
 import { getCollection } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
+import { withBase } from '../../lib/url.js';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+  return posts.map((post) => ({ params: { slug: post.slug } }));
 }
 
-const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { slug } = Astro.params;
+const target = withBase(`tax-guides/${slug}/`);
 ---
-<BlogPost post={post} headings={headings}>
-  <Content />
-</BlogPost>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting…</title>
+<link rel="canonical" href={new URL(target, Astro.site)} />
+<meta http-equiv="refresh" content={`0; url=${target}`} />
+</head>
+<body>
+<p>This page has moved to <a href={target}>this Tax Guide</a>.</p>
+</body>
+</html>

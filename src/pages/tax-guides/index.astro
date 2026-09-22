@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../lib/url.js';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+---
+<Layout title="UK Tax Guides | hmrctax.co.uk" description="UK tax guides and explainers — tax codes, National Insurance, and yearly rate changes.">
+  <main class="container py-4 pb-5">
+    <h1>Tax Guides</h1>
+    <p class="lead" style="max-width:60ch;">Plain-English guides to UK Income Tax and National Insurance.</p>
+    <div class="row g-4 mt-2">
+      {posts.map((p) => (
+        <div class="col-12 col-md-6">
+          <div class="stat-box h-100">
+            <h2 class="h5 fw-bold"><a href={withBase(`tax-guides/${p.slug}/`)}>{p.data.title}</a></h2>
+            <p class="small text-muted mb-0">{p.data.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Layout>

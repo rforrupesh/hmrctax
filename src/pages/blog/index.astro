@@ -1,25 +1,16 @@
 ---
-import Layout from '../../layouts/Layout.astro';
 import { withBase } from '../../lib/url.js';
-import { getCollection } from 'astro:content';
-
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
-);
+const target = withBase('tax-guides/');
 ---
-<Layout title="Blog | hmrctax.co.uk" description="UK tax guides and explainers — tax codes, National Insurance, and yearly rate changes.">
-  <main class="container py-4 pb-5">
-    <h1>Blog</h1>
-    <p class="lead" style="max-width:60ch;">Plain-English guides to UK Income Tax and National Insurance.</p>
-    <div class="row g-4 mt-2">
-      {posts.map((p) => (
-        <div class="col-12 col-md-6">
-          <div class="stat-box h-100">
-            <h2 class="h5 fw-bold"><a href={withBase(`blog/${p.slug}/`)}>{p.data.title}</a></h2>
-            <p class="small text-muted mb-0">{p.data.description}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </main>
-</Layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting…</title>
+<link rel="canonical" href={new URL(target, Astro.site)} />
+<meta http-equiv="refresh" content={`0; url=${target}`} />
+</head>
+<body>
+<p>This page has moved to <a href={target}>Tax Guides</a>.</p>
+</body>
+</html>

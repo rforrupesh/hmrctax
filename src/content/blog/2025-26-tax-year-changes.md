@@ -30,28 +30,10 @@ Scottish Income Tax uses different bands and rates, set separately by the Scotti
 
 Class 1 employee National Insurance is charged at:
 
-Class 1 employee National Insurance is charged at:
-
 - **8%** on earnings between £12,570 and £50,270 a year
 - **2%** on earnings above £50,270
 
-Employee Class 1 National Insurance rates were **8%** between the Primary Threshold and Upper Earnings Limit, and **2%** on earnings above the Upper Earnings Limit.
-
 National Insurance is calculated per pay period (weekly or monthly), not as a single annual figure, so your exact deduction can vary slightly depending on how your pay is structured across the year — for example, if you get a bonus in one month.
-
-For 2025/26, the main weekly thresholds were:
-
-| National Insurance threshold | 2025/26 |
-|---|---:|
-| Lower Earnings Limit | £125 per week |
-| Primary Threshold | £242 per week |
-| Upper Earnings Limit | £967 per week |
-| Employee rate | 8% |
-| Employee rate above UEL | 2% |
-
-The employer Class 1 National Insurance rate was **15%** above the Secondary Threshold.
-
-This is separate from Income Tax. Your payslip can therefore include both **Income Tax and National Insurance deductions**.
 
 ## Student loan repayments
 
@@ -62,5 +44,3 @@ If you're repaying a Plan 2 student loan, an extra 9% is deducted from earnings 
 Because the thresholds haven't moved, most people won't see a change in the *rate* of tax they pay this year compared to last — but anyone whose salary has increased will keep more of that increase eaten up by tax than they would in a year with rising thresholds. If you're close to £50,270 or £100,000, it's worth checking exactly where you land, since crossing either of those points changes your effective tax rate more than a simple percentage increase would suggest.
 
 Want to see exactly what this means for your salary? Try our [Income Tax calculator](/hmrctax/) — it breaks your figures down by year, month and week, and shows the Income Tax and National Insurance bands you fall into.
-=======
->>>>>>> 23420fd6e8ef3d2911f9b2784333645d28611903

@@ -2,7 +2,7 @@
 //
 // Generates:
 //   /public/sitemap-index.xml   -> index referencing the two files below
-//   /public/sitemap-pages.xml   -> home, about, contact, blog, privacy, terms
+//   /public/sitemap-pages.xml   -> home, about, contact, tax-guides, privacy, terms
 //   /public/tax-calculator.xml  -> /tax-calculator/ + every /tax-calculator/{salary}-annually/ page
 //
 // Run this BEFORE `astro build` — see package.json "build" script.
@@ -15,9 +15,9 @@ const BASE = '/hmrctax/';
 
 const url = (p) => `${SITE}${BASE}${p}`;
 
-// Blog slugs are read straight from src/content/blog/ so a new .md file
+// Guide slugs are read straight from src/content/blog/ so a new .md file
 // shows up in the sitemap automatically — nothing to update here.
-const blogSlugs = readdirSync('src/content/blog')
+const guideSlugs = readdirSync('src/content/blog')
   .filter((f) => f.endsWith('.md'))
   .map((f) => f.replace(/\.md$/, ''));
 
@@ -28,8 +28,8 @@ const pages = [
   'contact/',
   'privacy-policy/',
   'terms/',
-  'blog/',
-  ...blogSlugs.map((slug) => `blog/${slug}/`),
+  'tax-guides/',
+  ...guideSlugs.map((slug) => `tax-guides/${slug}/`),
 ];
 
 const pagesXml = `<?xml version="1.0" encoding="UTF-8"?>

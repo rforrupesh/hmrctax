@@ -29,14 +29,14 @@ const related = allPosts
 // Only top-level (##) headings go in the TOC to keep it short and scannable.
 const toc = headings.filter((h) => h.depth === 2);
 
-const pageUrl = new URL(withBase(`blog/${post.slug}/`), Astro.site).toString();
+const pageUrl = new URL(withBase(`tax-guides/${post.slug}/`), Astro.site).toString();
 
 const dateFmt = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 ---
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
   <main class="container py-4 pb-5">
-    <p class="small text-muted mb-2"><a href={withBase(`blog/`)}>Blog</a> &gt; {title}</p>
+    <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; {title}</p>
     <h1>{title}</h1>
     <p class="lead" style="max-width:65ch;">{description}</p>
     <p class="small text-muted">
@@ -84,7 +84,7 @@ const dateFmt = (d?: Date) =>
             <h2 class="h6 fw-bold text-uppercase mb-2" style="letter-spacing:0.03em;">Related articles</h2>
             <ul class="list-unstyled small mb-0">
               {related.map((p) => (
-                <li class="mb-2"><a href={withBase(`blog/${p.slug}/`)}>{p.data.title}</a></li>
+                <li class="mb-2"><a href={withBase(`tax-guides/${p.slug}/`)}>{p.data.title}</a></li>
               ))}
             </ul>
           </div>
