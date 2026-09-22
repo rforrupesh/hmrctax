@@ -48,10 +48,10 @@ const dateFmt = (d?: Date) =>
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
   <div class="post-hero">
     <div class="container py-5">
+      <p class="post-hero-breadcrumb small mb-3">
+        <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
+      </p>
      
-      <span class="post-category-pill text-capitalize mb-3 d-inline-block">
-        <a href={withBase(`tax-guides/category/${slugify(category)}/`)}>{category.replace(/-/g, ' ')}</a>
-      </span>
       <h1 class="post-hero-title mt-2">{title}</h1>
       <p class="post-hero-lead mb-4">{description}</p>
 
