@@ -51,9 +51,7 @@ const dateFmt = (d?: Date) =>
       <p class="post-hero-breadcrumb small mb-3">
         <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
       </p>
-      <span class="post-category-pill text-capitalize mb-3 d-inline-block">
-        <a href={withBase(`tax-guides/category/${slugify(category)}/`)}>{category.replace(/-/g, ' ')}</a>
-      </span>
+     
       <h1 class="post-hero-title mt-2">{title}</h1>
       <p class="post-hero-lead mb-4">{description}</p>
 
@@ -103,12 +101,12 @@ const dateFmt = (d?: Date) =>
 
         <footer class="post-footer mt-5 pt-4">
           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <span class="small fw-bold me-1">Category:</span>
+            <span class="post-footer-label">Category:</span>
             <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="tag-pill category-pill-link text-capitalize text-decoration-none">{category.replace(/-/g, ' ')}</a>
           </div>
           {tags.length > 0 && (
-            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-              <span class="small fw-bold me-1">Tags:</span>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <span class="post-footer-label">Tags:</span>
               {tags.map((t) => (
                 <a href={withBase(`tax-guides/tag/${slugify(t)}/`)} class="tag-pill text-capitalize text-decoration-none">{t.replace(/-/g, ' ')}</a>
               ))}
@@ -247,6 +245,18 @@ const dateFmt = (d?: Date) =>
     font-size: 0.85rem;
   }
   .blog-article :global(tbody tr:nth-child(even)) { background: var(--govgrey); }
+
+  .post-footer{
+    border-top: 1px solid var(--govborder);
+  }
+  .post-footer-label{
+    font-size:0.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:#505a5f;
+    margin-right:0.25rem;
+  }
 
   .tag-pill{
     display:inline-block;
