@@ -67,7 +67,9 @@ const heroGradient = heroGradientFrom(dominantColor);
     </div>
 
     {post.data.image && (
-      <img src={post.data.image} alt={title} class="post-hero-thumb" loading="eager" />
+      <div class="post-hero-thumb-wrap">
+        <img src={post.data.image} alt={title} class="post-hero-thumb" loading="eager" />
+      </div>
     )}
   </div>
 
@@ -180,16 +182,31 @@ const heroGradient = heroGradientFrom(dominantColor);
   .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
   .post-hero-byline{ color:rgba(255,255,255,0.85); line-height:1.5; }
   .post-hero-byline a{ color:#fff; text-decoration:underline; }
-  .post-hero-thumb{
+  .post-hero-thumb-wrap{
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     height: 100%;
     width: 42%;
+    z-index: 1;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%);
+    mask-image: linear-gradient(to right, transparent 0, #000 14%);
+  }
+  .post-hero-thumb{
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
-    z-index: 1;
+    filter: saturate(1.05);
+  }
+  .post-hero-thumb-wrap::after{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0) 30%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.25));
+    pointer-events: none;
   }
   .author-avatar-hero{
     width:40px; height:40px; flex:0 0 auto;
@@ -341,12 +358,14 @@ const heroGradient = heroGradientFrom(dominantColor);
   @media (max-width: 991.98px){
     .post-hero{ height:auto; overflow:visible; }
     .post-hero-inner.has-thumb{ padding-right: 0; padding-bottom: 1rem; }
-    .post-hero-thumb{
+    .post-hero-thumb-wrap{
       position: static;
       width: 100%;
       height: 220px;
       margin-top: 1.5rem;
       border-radius: 10px !important;
+      -webkit-mask-image: none;
+      mask-image: none;
     }
   }
 </style>
