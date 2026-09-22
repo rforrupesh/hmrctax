@@ -7,6 +7,7 @@ import Layout from './Layout.astro';
 import PostGrid from '../components/PostGrid.astro';
 import { withBase } from '../lib/url.js';
 import { slugify, categoryOf, authorOf, formatDate as fmtDate } from '../lib/blog.js';
+import { getDominantColor, heroGradientFrom } from '../lib/dominantColor.js';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -44,10 +45,13 @@ const pageUrl = new URL(withBase(`tax-guides/${post.slug}/`), Astro.site).toStri
 
 const dateFmt = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+
+const dominantColor = post.data.image ? await getDominantColor(post.data.image) : null;
+const heroGradient = heroGradientFrom(dominantColor);
 ---
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
-  <div class="post-hero">
-    <div class="container py-5 h-100">
+  <div class="post-hero" style={heroGradient ? `background: ${heroGradient};` : ''}>
+    <div class="container py-4 h-100">
       <div class="row align-items-stretch g-4 h-100">
         <div class={post.data.image ? "col-12 col-lg-7 d-flex flex-column justify-content-center" : "col-12"}>
           <p class="post-hero-breadcrumb small mb-3">
@@ -161,11 +165,12 @@ const dateFmt = (d?: Date) =>
 <style>
   .post-hero{
     background: linear-gradient(135deg, var(--govblack), var(--govblue));
-    background-size: cover;
-    background-position: center;
     color:#fff;
+    height: 280px;
+    overflow: hidden;
   }
-  .post-hero .container{ min-height: 380px; }
+  .post-hero .container{ height:100%; }
+  .post-hero .row{ height:100%; }
   .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
   .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
   .post-hero-title{ color:#fff; font-size:2.2rem; margin-bottom:0.5rem; }
@@ -175,9 +180,9 @@ const dateFmt = (d?: Date) =>
   .post-hero-thumb{
     width:100%;
     height:100%;
-    min-height:280px;
     object-fit:cover;
     border-radius:10px !important;
+    display:block;
   }
   .author-avatar-hero{
     width:40px; height:40px; flex:0 0 auto;
@@ -324,6 +329,12 @@ const dateFmt = (d?: Date) =>
 
   @media (min-width: 992px){
     .post-toc-box{ position:sticky; top:1rem; }
+  }
+
+  @media (max-width: 991.98px){
+    .post-hero{ height:auto; overflow:visible; }
+    .post-hero .container, .post-hero .row{ height:auto; }
+    .post-hero-thumb{ height:220px; }
   }
 </style>
 
