@@ -1,12 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../lib/url.js';
 
 const posts = [
   { slug: '2025-26-tax-year-changes', title: '2025/26 UK Tax Year: What Changed', desc: 'A summary of the key Income Tax and National Insurance changes for the 2025/26 tax year.' },
   { slug: 'how-to-check-your-tax-code', title: 'How to Check Your Tax Code', desc: 'What your tax code means, and how to check if it is correct.' },
   { slug: 'national-insurance-explained', title: 'National Insurance Explained', desc: 'How Class 1 National Insurance is calculated and what it pays for.' },
 ];
-const base = import.meta.env.BASE_URL;
 ---
 <Layout title="Blog | hmrctax.co.uk" description="UK tax guides and explainers — tax codes, National Insurance, and yearly rate changes.">
   <main class="container py-4 pb-5">
@@ -16,7 +16,7 @@ const base = import.meta.env.BASE_URL;
       {posts.map(p => (
         <div class="col-12 col-md-6">
           <div class="stat-box h-100">
-            <h2 class="h5 fw-bold"><a href={`${base}blog/${p.slug}/`}>{p.title}</a></h2>
+            <h2 class="h5 fw-bold"><a href={withBase(`blog/${p.slug}/`)}>{p.title}</a></h2>
             <p class="small text-muted mb-0">{p.desc}</p>
           </div>
         </div>

@@ -1,7 +1,7 @@
 ---
+import { withBase } from '../lib/url.js';
 const { title, description, ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const base = import.meta.env.BASE_URL;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +11,7 @@ const base = import.meta.env.BASE_URL;
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
-<link rel="icon" href={`${base}favicon.svg`} />
+<link rel="icon" href={withBase(`favicon.svg`)} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
@@ -88,18 +88,18 @@ const base = import.meta.env.BASE_URL;
       <line x1="38" y1="14" x2="38" y2="36" stroke="#fff" stroke-width="2.2"/>
       <path d="M2 14L8 3h6l2 5 2-5h6l6 11" stroke="#fff" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
     </svg>
-    <a href={base} class="fw-bold text-decoration-none" style="font-size:1.15rem; color:#fff;">hmrctax<span style="color:var(--govyellow);">.co.uk</span></a>
+    <a href={withBase()} class="fw-bold text-decoration-none" style="font-size:1.15rem; color:#fff;">hmrctax<span style="color:var(--govyellow);">.co.uk</span></a>
   </div>
 </div>
 
 <nav class="border-bottom bg-white">
   <div class="container">
     <ul class="nav" style="overflow-x:auto; flex-wrap:nowrap; white-space:nowrap;">
-      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={base} style="color:var(--govblack);">Home</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={`${base}tax-calculator/`} style="color:var(--govblack);">By Salary</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={`${base}blog/`} style="color:var(--govblack);">Blog</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={`${base}about/`} style="color:var(--govblack);">About</a></li>
-      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={`${base}contact/`} style="color:var(--govblack);">Contact</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase()} style="color:var(--govblack);">Home</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-calculator/`)} style="color:var(--govblack);">By Salary</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`blog/`)} style="color:var(--govblack);">Blog</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`about/`)} style="color:var(--govblack);">About</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`contact/`)} style="color:var(--govblack);">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -112,23 +112,23 @@ const base = import.meta.env.BASE_URL;
       <div class="col-6 col-md-3">
         <h2 class="h6 fw-bold" style="color:var(--govblack);">Calculator</h2>
         <ul class="list-unstyled small">
-          <li class="mb-2"><a href={base}>Income Tax calculator</a></li>
-          <li class="mb-2"><a href={`${base}tax-calculator/`}>Browse by salary</a></li>
+          <li class="mb-2"><a href={withBase()}>Income Tax calculator</a></li>
+          <li class="mb-2"><a href={withBase(`tax-calculator/`)}>Browse by salary</a></li>
         </ul>
       </div>
       <div class="col-6 col-md-3">
         <h2 class="h6 fw-bold" style="color:var(--govblack);">Blog</h2>
         <ul class="list-unstyled small">
-          <li class="mb-2"><a href={`${base}blog/`}>All articles</a></li>
+          <li class="mb-2"><a href={withBase(`blog/`)}>All articles</a></li>
         </ul>
       </div>
       <div class="col-6 col-md-3">
         <h2 class="h6 fw-bold" style="color:var(--govblack);">Site</h2>
         <ul class="list-unstyled small">
-          <li class="mb-2"><a href={`${base}about/`}>About us</a></li>
-          <li class="mb-2"><a href={`${base}contact/`}>Contact</a></li>
-          <li class="mb-2"><a href={`${base}privacy-policy/`}>Privacy policy</a></li>
-          <li class="mb-2"><a href={`${base}terms/`}>Terms &amp; conditions</a></li>
+          <li class="mb-2"><a href={withBase(`about/`)}>About us</a></li>
+          <li class="mb-2"><a href={withBase(`contact/`)}>Contact</a></li>
+          <li class="mb-2"><a href={withBase(`privacy-policy/`)}>Privacy policy</a></li>
+          <li class="mb-2"><a href={withBase(`terms/`)}>Terms &amp; conditions</a></li>
         </ul>
       </div>
       <div class="col-6 col-md-3">

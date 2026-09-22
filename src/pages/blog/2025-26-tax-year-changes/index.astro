@@ -1,13 +1,13 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-const base = import.meta.env.BASE_URL;
+import { withBase } from '../../../lib/url.js';
 ---
 <Layout
   title="2025/26 UK Tax Year: What Changed | hmrctax.co.uk"
   description="A summary of the key Income Tax and National Insurance changes for the 2025/26 UK tax year."
 >
   <main class="container py-4 pb-5">
-    <p class="small text-muted mb-2"><a href={`${base}blog/`}>Blog</a> &gt; 2025/26 Tax Year Changes</p>
+    <p class="small text-muted mb-2"><a href={withBase(`blog/`)}>Blog</a> &gt; 2025/26 Tax Year Changes</p>
     <h1>2025/26 UK Tax Year: What Changed</h1>
     <p class="lead" style="max-width:65ch;">A quick summary of the Income Tax and National Insurance thresholds that apply for the 2025 to 2026 UK tax year.</p>
 
@@ -23,7 +23,7 @@ const base = import.meta.env.BASE_URL;
       <h2 class="h5 fw-bold mt-4">National Insurance</h2>
       <p>Class 1 employee National Insurance is charged at 8% between £12,570 and £50,270, and 2% above £50,270.</p>
 
-      <p class="mt-4">Want to see exactly what this means for your salary? Try our <a href={base}>Income Tax calculator</a>.</p>
+      <p class="mt-4">Want to see exactly what this means for your salary? Try our <a href={withBase()}>Income Tax calculator</a>.</p>
     </div>
   </main>
 </Layout>

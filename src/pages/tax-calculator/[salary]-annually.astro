@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../lib/url.js';
 import Calculator from '../../components/Calculator.astro';
 import { calculateTax, fmt, getSalaryList } from '../../lib/tax.js';
 
@@ -12,7 +13,6 @@ export async function getStaticPaths() {
 }
 
 const { amount } = Astro.props;
-const base = import.meta.env.BASE_URL;
 const result = calculateTax(amount);
 
 // Vary the intro paragraph so pages aren't near-duplicate content
@@ -36,11 +36,11 @@ const related = [allSalaries[idx - 2], allSalaries[idx - 1], allSalaries[idx + 1
 
 const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | hmrctax.co.uk`;
 const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
-const ogImage = `${base}og/${amount}-annually.png`;
+const ogImage = withBase(`og/${amount}-annually.png`);
 ---
 <Layout title={pageTitle} description={pageDesc} ogImage={ogImage}>
   <main class="container py-4 pb-5">
-    <p class="small text-muted mb-2"><a href={base}>Home</a> &gt; <a href={`${base}tax-calculator/`}>Tax Calculator</a> &gt; {fmt(amount)} a year</p>
+    <p class="small text-muted mb-2"><a href={withBase()}>Home</a> &gt; <a href={withBase(`tax-calculator/`)}>Tax Calculator</a> &gt; {fmt(amount)} a year</p>
 
     <h1>{fmt(amount)} After Tax UK</h1>
     <p class="lead" style="max-width:60ch;">If you earn <strong>{fmt(amount)}</strong> a year in the UK, here's what you'll actually take home in the 2025/26 tax year.</p>
@@ -57,7 +57,7 @@ const ogImage = `${base}og/${amount}-annually.png`;
 
     <figure class="mb-4">
       <img
-        src={`${base}og/${amount}-annually.png`}
+        src={withBase(`og/${amount}-annually.png`)}
         alt={`${fmt(amount)} after tax UK — take-home pay summary: ${fmt(result.net)} per year, ${fmt(result.tax)} Income Tax, ${fmt(result.ni)} National Insurance`}
         width="1200"
         height="630"
@@ -118,7 +118,7 @@ const ogImage = `${base}og/${amount}-annually.png`;
         <div class="row row-cols-2 row-cols-md-4 g-2">
           {related.map((s) => (
             <div class="col">
-              <a href={`${base}tax-calculator/${s}-annually/`}>{fmt(s)} a year</a>
+              <a href={withBase(`tax-calculator/${s}-annually/`)}>{fmt(s)} a year</a>
             </div>
           ))}
         </div>
