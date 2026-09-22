@@ -98,8 +98,8 @@ export function fmt(n) {
 export function getSalaryList() {
   const salaries = new Set();
   for (let s = 10000; s <= 50000; s += 1000) salaries.add(s);
-  for (let s = 52000; s <= 100000; s += 2000) salaries.add(s);
-  for (let s = 110000; s <= 250000; s += 10000) salaries.add(s);
+  for (let s = 51000; s <= 100000; s += 1000) salaries.add(s);
+  for (let s = 105000; s <= 250000; s += 5000) salaries.add(s);
   [1000, 1200, 1500, 2000, 5000, 125140].forEach((s) => salaries.add(s));
   return Array.from(salaries).sort((a, b) => a - b);
 }
