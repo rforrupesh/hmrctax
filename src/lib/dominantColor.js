@@ -10,8 +10,13 @@
 // into a flat grey average.
 
 import { createCanvas, loadImage } from '@napi-rs/canvas';
+import path from 'node:path';
 
 const cache = new Map();
+// Astro serves everything in /public/ as-is from the site root, so an
+// image field like "/images/foo.jpg" in frontmatter maps to this folder
+// on disk at build time.
+const PUBLIC_DIR = path.join(process.cwd(), 'public');
 
 function rgbToHsl(r, g, b) {
   r /= 255; g /= 255; b /= 255;
@@ -62,7 +67,11 @@ export async function getDominantColor(src) {
           clearTimeout(timeout);
         }
       } else {
-        img = await loadImage(src);
+        // A frontmatter value like "/images/foo.jpg" is a public-folder
+        // path, not a filesystem path — resolve it before handing it to
+        // loadImage, which only understands real file paths/URLs.
+        const localPath = src.startsWith('/') ? path.join(PUBLIC_DIR, src) : src;
+        img = await loadImage(localPath);
       }
       const SIZE = 32;
       const canvas = createCanvas(SIZE, SIZE);
