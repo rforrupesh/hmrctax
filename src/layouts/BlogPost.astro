@@ -1,8 +1,8 @@
 ---
-// Shared layout for every blog post. Handles the breadcrumb, title/meta,
-// table of contents (built from ## headings), related-post suggestions,
-// and share buttons — so a new post only needs a markdown file in
-// src/content/blog/, nothing else.
+// Shared layout for every blog post. Handles the hero banner, table of
+// contents, key takeaways, related-post suggestions, and share buttons —
+// so a new post only needs a markdown file in src/content/blog/, nothing
+// else.
 import Layout from './Layout.astro';
 import PostGrid from '../components/PostGrid.astro';
 import { withBase } from '../lib/url.js';
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { post, headings } = Astro.props;
-const { title, description, publishDate, updatedDate, tags } = post.data;
+const { title, description, publishDate, updatedDate, tags, takeaways } = post.data;
 const category = categoryOf(post);
 const author = authorOf(post);
 
@@ -46,27 +46,65 @@ const dateFmt = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 ---
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
-  <main class="container py-4 pb-5">
-    <p class="small text-muted mb-3"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; {title}</p>
-    <span class="post-category-pill text-capitalize mb-3 d-inline-block">
-      <a href={withBase(`tax-guides/category/${slugify(category)}/`)}>{category.replace(/-/g, ' ')}</a>
-    </span>
-    <h1 class="mt-2">{title}</h1>
-    <p class="lead mb-4" style="max-width:65ch;">{description}</p>
+  <div class="post-hero">
+    <div class="container py-5">
+      <p class="post-hero-breadcrumb small mb-3">
+        <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
+      </p>
+      <span class="post-category-pill text-capitalize mb-3 d-inline-block">
+        <a href={withBase(`tax-guides/category/${slugify(category)}/`)}>{category.replace(/-/g, ' ')}</a>
+      </span>
+      <h1 class="post-hero-title mt-2">{title}</h1>
+      <p class="post-hero-lead mb-4">{description}</p>
 
-    <div class="row g-4 mt-2">
-      <div class="col-12 col-lg-8 order-2 order-lg-1">
-        <article class="blog-article" style="max-width:65ch;">
+      <div class="d-flex align-items-center gap-2">
+        <span class="author-avatar-hero">{author.trim().charAt(0).toUpperCase()}</span>
+        <span class="post-hero-byline small">
+          By: <a href={withBase(`author/${slugify(author)}/`)}>{author}</a>
+          {' '}&bull;{' '}
+          <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="text-capitalize">{category.replace(/-/g, ' ')}</a>
+          <br />
+          {updatedDate ? <>Last updated: {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <main class="container py-5" style="max-width:1200px;">
+    <div class="row g-4">
+      <div class="col-12 col-lg-3 order-2 order-lg-1">
+        {toc.length > 0 && (
+          <nav class="post-sidebar-box post-toc-box mb-4" aria-label="Table of contents">
+            <h2 class="post-sidebar-label mb-3">Table of Contents</h2>
+            <ol class="ps-3 small mb-0 post-toc">
+              {toc.map((h) => (
+                <li class="mb-2"><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )}
+      </div>
+
+      <div class="col-12 col-lg-6 order-1 order-lg-2">
+        {takeaways.length > 0 && (
+          <div class="key-takeaways-box mb-4">
+            <h2 class="key-takeaways-title mb-3">Key Takeaways</h2>
+            <ul class="mb-0">
+              {takeaways.map((t) => (
+                <li class="mb-2">{t}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <article class="blog-article">
           <slot />
         </article>
 
-        <footer class="post-footer mt-5 pt-4" style="max-width:65ch;">
+        <footer class="post-footer mt-5 pt-4">
           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <span class="small fw-bold me-1">Category:</span>
             <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="tag-pill category-pill-link text-capitalize text-decoration-none">{category.replace(/-/g, ' ')}</a>
-            <span class="small text-muted ms-2">
-              Published {dateFmt(publishDate)}{updatedDate && <> &middot; Updated {dateFmt(updatedDate)}</>}
-            </span>
           </div>
           {tags.length > 0 && (
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
@@ -76,27 +114,29 @@ const dateFmt = (d?: Date) =>
               ))}
             </div>
           )}
+        </footer>
+      </div>
 
-          <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-4 border-top">
-            <span class="small fw-bold me-1">Share:</span>
+      <div class="col-12 col-lg-3 order-3">
+        <div class="post-sidebar-box mb-4">
+          <h2 class="post-sidebar-label mb-3">Share this Post</h2>
+          <div class="d-flex flex-column gap-2">
             <a
-              class="btn btn-sm btn-freq"
+              class="btn btn-sm btn-freq text-start"
               target="_blank"
               rel="noopener"
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(pageUrl)}`}
             >X / Twitter</a>
             <a
-              class="btn btn-sm btn-freq"
+              class="btn btn-sm btn-freq text-start"
               target="_blank"
               rel="noopener"
               href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`}
             >LinkedIn</a>
-            <button type="button" class="btn btn-sm btn-freq" id="copyLinkBtn" data-url={pageUrl}>Copy link</button>
+            <button type="button" class="btn btn-sm btn-freq text-start" id="copyLinkBtn" data-url={pageUrl}>Copy link</button>
           </div>
-        </footer>
-      </div>
+        </div>
 
-      <div class="col-12 col-lg-4 order-1 order-lg-2">
         <div class="post-sidebar-box mb-4">
           <h2 class="post-sidebar-label mb-3">Written by</h2>
           <a href={withBase(`author/${slugify(author)}/`)} class="d-flex align-items-center gap-2 text-decoration-none">
@@ -104,17 +144,6 @@ const dateFmt = (d?: Date) =>
             <span class="small fw-semibold" style="color:var(--govblack);">{author}</span>
           </a>
         </div>
-
-        {toc.length > 0 && (
-          <nav class="post-sidebar-box mb-4" aria-label="Table of contents">
-            <h2 class="post-sidebar-label mb-3">On this page</h2>
-            <ul class="list-unstyled small mb-0 post-toc">
-              {toc.map((h) => (
-                <li class="mb-2"><a href={`#${h.slug}`}>{h.text}</a></li>
-              ))}
-            </ul>
-          </nav>
-        )}
       </div>
     </div>
 
@@ -128,6 +157,37 @@ const dateFmt = (d?: Date) =>
 </Layout>
 
 <style>
+  .post-hero{
+    background: linear-gradient(135deg, var(--govblack), var(--govblue));
+    color:#fff;
+  }
+  .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
+  .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
+  .post-hero-title{ color:#fff; font-size:2.2rem; margin-bottom:0.5rem; }
+  .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
+  .post-hero-byline{ color:rgba(255,255,255,0.85); line-height:1.5; }
+  .post-hero-byline a{ color:#fff; text-decoration:underline; }
+  .author-avatar-hero{
+    width:40px; height:40px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    background:#fff; color:var(--govblack);
+    border-radius:50% !important;
+    font-size:0.95rem; font-weight:700;
+  }
+
+  .key-takeaways-box{
+    background: rgba(29,112,184,0.07);
+    border-radius:10px !important;
+    padding:1.5rem 1.75rem;
+  }
+  .key-takeaways-title{
+    color:var(--govblue);
+    font-size:1.1rem;
+    font-weight:700;
+  }
+  .key-takeaways-box ul{ padding-left:1.1rem; }
+  .key-takeaways-box li{ line-height:1.5; }
+
   /* Markdown produces bare HTML tags with no Bootstrap classes attached,
      so table/link/code/etc. need their own styling here to match the
      rest of the site (govgreen/govblack theme, same as Layout.astro). */
@@ -201,7 +261,7 @@ const dateFmt = (d?: Date) =>
 
   .post-category-pill a{
     display:inline-block;
-    background:var(--govblack);
+    background:rgba(255,255,255,0.15);
     color:#fff !important;
     font-size:0.7rem;
     font-weight:700;
@@ -211,7 +271,7 @@ const dateFmt = (d?: Date) =>
     border-radius:999px !important;
     text-decoration:none;
   }
-  .post-category-pill a:hover{ background:var(--govblue); }
+  .post-hero .post-category-pill a:hover{ background:rgba(255,255,255,0.28); }
   .author-avatar-sm{
     width:36px; height:36px; flex:0 0 auto;
     display:flex; align-items:center; justify-content:center;
@@ -233,8 +293,13 @@ const dateFmt = (d?: Date) =>
     color:#505a5f;
     margin:0;
   }
+  .post-toc{ counter-reset:toc; }
   .post-toc li a{ color:var(--govblack); text-decoration:none; line-height:1.4; }
   .post-toc li a:hover{ color:var(--govblue); text-decoration:underline; }
+
+  @media (min-width: 992px){
+    .post-toc-box{ position:sticky; top:1rem; }
+  }
 </style>
 
 <script>

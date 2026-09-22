@@ -3,6 +3,10 @@ title: "What is Tax"
 description: "know about tax uk."
 publishDate: 2025-04-06
 tags: ["tax guide", ]
+takeaways:
+  - "Tax is money collected by government to fund public services like the NHS, schools and roads."
+  - "Most UK workers pay tax through Income Tax and National Insurance, deducted automatically via PAYE."
+  - "You have a tax-free Personal Allowance — the amount you can earn before tax kicks in."
 ---
 
 # What Is Tax? A Simple Guide to How Tax Works in the UK
