@@ -10,9 +10,6 @@ const { posts } = Astro.props;
     return (
       <div class="col-12 col-md-6 col-lg-4 post-grid-item" data-category={slugify(category)}>
         <a href={withBase(`tax-guides/${p.slug}/`)} class="blog-card h-100 d-flex flex-column text-decoration-none">
-          {p.data.image && (
-            <img src={p.data.image} alt={p.data.title} class="blog-card-thumb mb-3" loading="lazy" />
-          )}
           <span class="blog-card-pill text-capitalize">{category.replace(/-/g, ' ')}</span>
           <h2 class="blog-card-title mb-2 mt-2">{p.data.title}</h2>
           <p class="blog-card-excerpt small mb-0">{p.data.description}</p>
@@ -31,14 +28,6 @@ const { posts } = Astro.props;
     color:inherit;
   }
   .blog-card:hover{ background: rgba(0,112,60,0.11); }
-  .blog-card-thumb{
-    aspect-ratio: 16/9;
-    object-fit:cover;
-    border-radius:8px !important;
-    margin-left:-1.5rem;
-    margin-top:-1.5rem;
-    width:calc(100% + 3rem);
-  }
   .blog-card-pill{
     display:inline-block;
     align-self:flex-start;

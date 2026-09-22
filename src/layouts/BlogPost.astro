@@ -46,7 +46,10 @@ const dateFmt = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 ---
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
-  <div class="post-hero">
+  <div
+    class="post-hero"
+    style={post.data.image ? `background-image: linear-gradient(rgba(10,15,20,0.72), rgba(10,15,20,0.72)), url('${post.data.image}');` : ''}
+  >
     <div class="container py-5">
       <div class="row align-items-center g-4">
         <div class={post.data.image ? "col-12 col-lg-7" : "col-12"}>
@@ -161,6 +164,8 @@ const dateFmt = (d?: Date) =>
 <style>
   .post-hero{
     background: linear-gradient(135deg, var(--govblack), var(--govblue));
+    background-size: cover;
+    background-position: center;
     color:#fff;
   }
   .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
