@@ -39,6 +39,33 @@ const related = [allSalaries[idx - 2], allSalaries[idx - 1], allSalaries[idx + 1
 const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | hmrctax.co.uk`;
 const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
 const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
+
+// Build a static SVG pie chart (Income Tax / National Insurance / Take home pay)
+// Pure math at build time — no client-side JS needed.
+function polarToCartesian(cx, cy, r, angleDeg) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function pieSlicePath(cx, cy, r, startAngle, endAngle) {
+  if (endAngle - startAngle >= 359.999) endAngle = startAngle + 359.999; // avoid 0-length path for 100% slices
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+}
+const pieTotal = result.tax + result.ni + result.net;
+const pieSlices = [
+  { label: 'Income Tax', value: result.tax, color: '#1d4ed8' },
+  { label: 'National Insurance', value: result.ni, color: '#0b0c3d' },
+  { label: 'Take home pay', value: result.net, color: '#e6007e' },
+].filter((s) => s.value > 0);
+let cursor = 0;
+const pieData = pieSlices.map((s) => {
+  const sliceAngle = (s.value / pieTotal) * 360;
+  const path = pieSlicePath(110, 110, 100, cursor, cursor + sliceAngle);
+  cursor += sliceAngle;
+  return { ...s, path };
+});
 ---
 <Layout title={pageTitle} description={pageDesc} ogImage={ogImage}>
   <main class="container py-4 pb-5">
@@ -99,6 +126,22 @@ const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="text-center mb-5">
+      <div class="d-flex justify-content-center flex-wrap gap-4 mb-3">
+        {pieData.map((s) => (
+          <div class="d-flex align-items-center gap-2">
+            <span class="swatch" style={`background:${s.color};`}></span>
+            <span class="small fw-bold">{s.label}</span>
+          </div>
+        ))}
+      </div>
+      <svg width="220" height="220" viewBox="0 0 220 220" role="img" aria-label="Pie chart showing Income Tax, National Insurance and take-home pay split">
+        {pieData.map((s) => (
+          <path d={s.path} fill={s.color} />
+        ))}
+      </svg>
     </div>
 
     <h2 class="h5 fw-bold mt-5 mb-2">Calculation details</h2>
