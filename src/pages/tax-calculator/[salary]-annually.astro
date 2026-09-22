@@ -36,7 +36,7 @@ const allSalaries = getSalaryList();
 const idx = allSalaries.indexOf(amount);
 const related = [allSalaries[idx - 2], allSalaries[idx - 1], allSalaries[idx + 1], allSalaries[idx + 2]].filter(Boolean);
 
-const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | hmrctax.co.uk`;
+const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | salary-calc.co.uk`;
 const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
 const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
 

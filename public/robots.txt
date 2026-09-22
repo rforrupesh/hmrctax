@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hmrctax.co.uk/sitemap-index.xml
+Sitemap: https://rforrupesh.github.io/hmrctax/sitemap-index.xml

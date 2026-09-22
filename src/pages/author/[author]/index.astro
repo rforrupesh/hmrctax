@@ -27,7 +27,7 @@ export async function getStaticPaths() {
 
 const { name, posts } = Astro.props;
 ---
-<Layout title={`${name} | hmrctax.co.uk`} description={`Tax guides written by ${name} on hmrctax.co.uk.`}>
+<Layout title={`${name} | salary-calc.co.uk`} description={`Tax guides written by ${name} on salary-calc.co.uk.`}>
   <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
     <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Author</p>
 
@@ -35,7 +35,7 @@ const { name, posts } = Astro.props;
       <span class="author-avatar-lg">{initials(name)}</span>
       <div>
         <h1 class="mb-1" style="font-family: Georgia, 'Times New Roman', serif; font-size:1.9rem;">{name}</h1>
-        <p class="small text-muted mb-0">Writer at hmrctax.co.uk &middot; {posts.length} guide{posts.length === 1 ? '' : 's'} published</p>
+        <p class="small text-muted mb-0">Writer at salary-calc.co.uk &middot; {posts.length} guide{posts.length === 1 ? '' : 's'} published</p>
       </div>
     </div>
     <p class="lead mb-4" style="max-width:60ch;">Plain-English UK Income Tax and National Insurance guides, written to help you understand your payslip and your tax code.</p>

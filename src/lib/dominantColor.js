@@ -58,7 +58,7 @@ export async function getDominantColor(src) {
         try {
           const res = await fetch(src, {
             signal: controller.signal,
-            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; hmrctax-build/1.0)' },
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; salarycalc-build/1.0)' },
           });
           if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${res.statusText} for ${src}`);
           const buf = Buffer.from(await res.arrayBuffer());

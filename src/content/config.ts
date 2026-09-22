@@ -9,7 +9,7 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     category: z.string().optional(),
-    author: z.string().default('hmrctax team'),
+    author: z.string().default('salarycalc team'),
     image: z.string().optional(),
     takeaways: z.array(z.string()).default([]),
   }),

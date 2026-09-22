@@ -27,7 +27,7 @@ export function categoryOf(post) {
 }
 
 export function authorOf(post) {
-  return post.data.author || 'hmrctax team';
+  return post.data.author || 'salarycalc team';
 }
 
 // Simple word-count based estimate, same rough math most blogs use

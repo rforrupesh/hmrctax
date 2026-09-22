@@ -4,7 +4,7 @@
 // manually concatenating `base + path`. It guarantees exactly one slash
 // between the base and the path, no matter what BASE_URL looks like
 // (with or without a trailing slash) — this is the fix for bugs like
-// "/hmrctaxog/..." or "/hmrctaxtax-calculator/..." showing up in links.
+// "/salarycalcog/..." or "/salarycalctax-calculator/..." showing up in links.
 
 export function withBase(path = '') {
   const base = import.meta.env.BASE_URL || '/';

@@ -55,13 +55,13 @@ const schemaGraph = {
       '@type': 'WebSite',
       '@id': `${siteUrl}#website`,
       url: siteUrl,
-      name: 'hmrctax.co.uk',
+      name: 'salary-calc.co.uk',
       publisher: { '@id': `${siteUrl}#organization` },
     },
     {
       '@type': 'Organization',
       '@id': `${siteUrl}#organization`,
-      name: 'hmrctax.co.uk',
+      name: 'salary-calc.co.uk',
       url: siteUrl,
       logo: {
         '@type': 'ImageObject',
@@ -109,7 +109,7 @@ const dateFmt = (d?: Date) =>
 const dominantColor = post.data.image ? await getDominantColor(post.data.image) : null;
 const heroGradient = heroGradientFrom(dominantColor);
 ---
-<Layout title={`${title} | hmrctax.co.uk`} description={description}>
+<Layout title={`${title} | salary-calc.co.uk`} description={description}>
   <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
   <div class="post-hero" style={heroGradient ? `background: ${heroGradient};` : ''}>
     <div class={`container py-4 h-100 post-hero-inner${post.data.image ? ' has-thumb' : ''}`}>

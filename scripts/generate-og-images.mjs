@@ -63,7 +63,7 @@ function drawImage(salary) {
 
   ctx.fillStyle = '#ffdd00';
   ctx.font = 'bold 30px sans-serif';
-  ctx.fillText('hmrctax.co.uk', pad, H - 32);
+  ctx.fillText('salary-calc.co.uk', pad, H - 32);
 
   ctx.fillStyle = '#ffffff';
   ctx.font = '26px sans-serif';
