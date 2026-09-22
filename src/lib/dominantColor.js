@@ -143,9 +143,21 @@ export async function getDominantColor(src) {
       // yellow background, green grass next to a red jacket) instead of
       // only ever surfacing the single winning bucket. A bucket only
       // qualifies if its hue is far enough from the winner's to actually
-      // read as a different color, and it carries a real share of the
-      // vote — not just noise a few pixels away from the winning hue.
+      // read as a different color, close enough to still read as a
+      // *pairing* rather than a clash, and it carries a real share of
+      // the vote — not just noise a few pixels away from the winning hue.
+      //
+      // Near-complementary pairs (orange vs blue, red vs green — ~150°+
+      // apart) don't get to be a "secondary": forced into a gradient
+      // together they read as two flat, high-contrast blocks stitched
+      // down the middle (traffic-cone orange slammed against navy)
+      // instead of a graceful two-tone hero. Capping the distance keeps
+      // dual-hue results to combinations that actually flow, like navy
+      // into a sunset pink/purple, and anything more extreme falls back
+      // to the single-hue treatment instead (see the apples example).
       const bucketAngle = 360 / BUCKETS;
+      const MIN_HUE_DIST = 45;
+      const MAX_HUE_DIST = 140;
       let runnerUp = -1;
       for (let i = 0; i < BUCKETS; i++) {
         if (i === winner) continue;
@@ -153,7 +165,7 @@ export async function getDominantColor(src) {
           Math.abs(i - winner) * bucketAngle,
           360 - Math.abs(i - winner) * bucketAngle
         );
-        if (angDist < 45) continue; // too close to the winner's hue
+        if (angDist < MIN_HUE_DIST || angDist > MAX_HUE_DIST) continue;
         if (bucketWeight[i] < bucketWeight[winner] * 0.35) continue; // too minor
         if (runnerUp === -1 || bucketWeight[i] > bucketWeight[runnerUp]) runnerUp = i;
       }
@@ -236,7 +248,10 @@ export function heroGradientStops(color) {
   }
 
   // Give the secondary hue its own stops so it actually shows up in the
-  // gradient rather than being averaged/overridden away.
+  // gradient rather than being averaged/overridden away. The blend zone
+  // is deliberately wide (30%-70%, not a tight 40%-60%) so the handoff
+  // between the two hues reads as a gradient flowing across the whole
+  // hero, not a hard seam stitched down the middle.
   const sat2 = Math.max(65, Math.round(secondary.s * 100));
   const darkL2 = darkLightnessForHue(secondary.h);
   const midL2 = darkL2 + 18;
@@ -245,8 +260,8 @@ export function heroGradientStops(color) {
 
   return [
     { offset: 0, color: dark },
-    { offset: 0.4, color: mid },
-    { offset: 0.6, color: mid2 },
+    { offset: 0.3, color: mid },
+    { offset: 0.7, color: mid2 },
     { offset: 1, color: dark2 },
   ];
 }
