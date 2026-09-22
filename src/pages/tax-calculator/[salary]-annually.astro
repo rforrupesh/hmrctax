@@ -40,32 +40,32 @@ const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | hmrct
 const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
 const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
 
-// Build a static donut chart (same design as the homepage calculator) —
-// pure SVG math at build time, no client-side JS needed.
-const donutSegments = [
-  { name: 'Take-home pay', v: result.net, c: '#00703c' },
-  { name: 'Income Tax', v: result.tax, c: '#1d70b8' },
-  { name: 'National Insurance', v: result.ni, c: '#5694ca' },
-].filter((s) => s.v > 0);
-const R = 60, CIRC = 2 * Math.PI * R;
-let donutOffset = 0;
-const donutData = donutSegments.map((s) => {
-  const frac = amount > 0 ? s.v / amount : 0;
-  const dash = frac * CIRC;
-  const entry = { ...s, dash, gap: CIRC - dash, offset: -donutOffset, pct: Math.round(frac * 100) };
-  donutOffset += dash;
-  return entry;
+// Build a static SVG pie chart (Income Tax / National Insurance / Take home pay)
+// Pure math at build time — no client-side JS needed.
+function polarToCartesian(cx, cy, r, angleDeg) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function pieSlicePath(cx, cy, r, startAngle, endAngle) {
+  if (endAngle - startAngle >= 359.999) endAngle = startAngle + 359.999; // avoid 0-length path for 100% slices
+  const start = polarToCartesian(cx, cy, r, endAngle);
+  const end = polarToCartesian(cx, cy, r, startAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+}
+const pieTotal = result.tax + result.ni + result.net;
+const pieSlices = [
+  { label: 'Income Tax', value: result.tax, color: '#1d4ed8' },
+  { label: 'National Insurance', value: result.ni, color: '#0b0c3d' },
+  { label: 'Take home pay', value: result.net, color: '#e6007e' },
+].filter((s) => s.value > 0);
+let cursor = 0;
+const pieData = pieSlices.map((s) => {
+  const sliceAngle = (s.value / pieTotal) * 360;
+  const path = pieSlicePath(110, 110, 100, cursor, cursor + sliceAngle);
+  cursor += sliceAngle;
+  return { ...s, path };
 });
-const takeHomePct = amount > 0 ? Math.round((result.net / amount) * 100) : 0;
-
-// Bar segments (same proportions, rendered as a horizontal bar)
-const barSegments = donutSegments.map((s) => ({ ...s, pct: amount > 0 ? (s.v / amount) * 100 : 0 }));
-
-// Tax band + NI breakdown rows, reusing the shared calculation
-const bandRows = [
-  ...result.taxRows.map((r) => ({ ...r, group: 'tax' })),
-  ...result.niRows.map((r) => ({ ...r, group: 'ni' })),
-];
 ---
 <Layout title={pageTitle} description={pageDesc} ogImage={ogImage}>
   <main class="container py-4 pb-5">
@@ -89,64 +89,6 @@ const bandRows = [
 
     <h2 class="h6 fw-bold text-uppercase mt-4" style="color:#505a5f; letter-spacing:0.03em;">Your estimation — Tax year 2025/26</h2>
 
-    <div class="result-panel p-4 mt-2 mb-4">
-      <div class="small opacity-75">Estimated take-home pay per year</div>
-      <div class="figure">{fmt(result.net)}</div>
-    </div>
-
-    <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
-      <svg viewBox="0 0 150 150" width="140" height="140" style="max-width:140px; width:100%; height:auto; flex-shrink:0;" role="img" aria-label="Donut chart showing take-home pay, Income Tax and National Insurance split">
-        <circle cx="75" cy="75" r={R} fill="none" stroke="#dee2e6" stroke-width="22"/>
-        <g transform="rotate(-90 75 75)">
-          {donutData.map((s) => (
-            <circle cx="75" cy="75" r={R} fill="none" stroke={s.c} stroke-width="22" stroke-dasharray={`${s.dash} ${s.gap}`} stroke-dashoffset={s.offset} stroke-linecap="butt"/>
-          ))}
-        </g>
-        <text x="75" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#0b0c0c">{takeHomePct}%</text>
-      </svg>
-      <ul class="list-unstyled flex-grow-1 mb-0" style="min-width:200px;">
-        {donutData.map((s) => (
-          <li class="d-flex align-items-center gap-2 mb-1">
-            <span class="swatch" style={`background:${s.c};`}></span>
-            <span class="small fw-bold">{s.name}</span>
-            <span class="small fw-bold ms-auto">{s.pct}%</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-
-    <div class="mb-4" style="display:flex; height:22px; overflow:hidden; border:1px solid var(--govblack);">
-      {barSegments.map((s) => (
-        <div style={`background:${s.c}; width:${s.pct}%; height:100%;`}></div>
-      ))}
-    </div>
-
-    <h2 class="h6 fw-bold mb-3">How your deductions are calculated</h2>
-    <table class="table table-sm">
-      <thead>
-        <tr><th>Band</th><th class="text-end">Rate</th><th class="text-end">Amount</th></tr>
-      </thead>
-      <tbody>
-        {bandRows.length === 0 ? (
-          <tr><td colspan="3" class="text-muted">No tax or National Insurance due at this income level.</td></tr>
-        ) : bandRows.map((r) => (
-          <tr>
-            <td><span class="swatch" style={`background:${r.group === 'tax' ? '#00703c' : '#1d70b8'};`}></span> {r.name}</td>
-            <td class="text-end">{(r.rate * 100).toFixed(0)}%</td>
-            <td class="text-end">{fmt(r.tax)}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-
-    <div class="border-top pt-2 mb-5">
-      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Gross salary</span><span>{fmt(amount)}</span></div>
-      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Income Tax</span><span>-{fmt(result.tax)}</span></div>
-      <div class="d-flex justify-content-between py-1 border-bottom small"><span>National Insurance</span><span>-{fmt(result.ni)}</span></div>
-      <div class="d-flex justify-content-between py-2 fw-bold fs-5" style="color:var(--govgreen);"><span>Take-home pay</span><span>{fmt(result.net)}</span></div>
-    </div>
-
-    <h2 class="h6 fw-bold text-uppercase mt-4" style="color:#505a5f; letter-spacing:0.03em;">Broken down by period</h2>
     <div class="table-responsive mt-2 mb-4">
       <table class="table table-bordered mb-0" style="border-color:var(--govblack);">
         <thead>
@@ -184,6 +126,22 @@ const bandRows = [
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="text-center mb-5">
+      <div class="d-flex justify-content-center flex-wrap gap-4 mb-3">
+        {pieData.map((s) => (
+          <div class="d-flex align-items-center gap-2">
+            <span class="swatch" style={`background:${s.color};`}></span>
+            <span class="small fw-bold">{s.label}</span>
+          </div>
+        ))}
+      </div>
+      <svg width="220" height="220" viewBox="0 0 220 220" role="img" aria-label="Pie chart showing Income Tax, National Insurance and take-home pay split">
+        {pieData.map((s) => (
+          <path d={s.path} fill={s.color} />
+        ))}
+      </svg>
     </div>
 
     <h2 class="h5 fw-bold mt-5 mb-2">Calculation details</h2>
