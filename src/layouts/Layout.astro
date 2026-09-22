@@ -1,5 +1,6 @@
 ---
 import { withBase } from '../lib/url.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
 const { title, description, ogImage } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -16,7 +17,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta property="og:description" content={description} />
 {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
 <meta name="twitter:card" content="summary_large_image" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
 <style is:global>
   :root{
     --govgreen:#00703c;
