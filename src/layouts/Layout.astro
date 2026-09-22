@@ -1,0 +1,147 @@
+---
+const { title, description, ogImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+<link rel="icon" href="/favicon.svg" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+<meta name="twitter:card" content="summary_large_image" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<style is:global>
+  :root{
+    --govgreen:#00703c;
+    --govblue:#1d70b8;
+    --govblack:#0b0c0c;
+    --govyellow:#ffdd00;
+    --govgrey:#f3f2f1;
+    --govborder:#b1b4b6;
+  }
+  body{
+    background:#fff;
+    font-family: "GDS Transport", -apple-system, Arial, Helvetica, sans-serif;
+    color:var(--govblack);
+    font-size:1.0625rem;
+    line-height:1.5;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *, *::before, *::after{ border-radius:0 !important; }
+  a{ color:var(--govblue); }
+  a:visited{ color:#4c2c92; }
+  *:focus{
+    outline:3px solid var(--govyellow) !important;
+    outline-offset:0 !important;
+    box-shadow:0 0 0 2px var(--govblack) !important;
+  }
+  .crown-bar{ background:var(--govblack); color:#fff; padding-top:calc(0.5rem + env(safe-area-inset-top,0px)); }
+  main{ max-width:960px; }
+  h1{ font-size:2.1rem; font-weight:700; letter-spacing:-0.02em; }
+  .lead{ font-size:1.15rem; line-height:1.4; color:var(--govblack); }
+  .form-control{ border:2px solid var(--govblack); font-size:1.1rem; padding:0.45rem 0.7rem; }
+  .form-control:focus{ border-color:var(--govblack); box-shadow:none; }
+  .input-group-text{ border:2px solid var(--govblack); border-right:none; background:var(--govgrey); font-size:1.1rem; }
+  .form-check-input{ width:1.5rem; height:1.5rem; border:2px solid var(--govblack); margin-top:0; }
+  .form-check-input:checked{ background-color:var(--govblack); border-color:var(--govblack); }
+  .btn-freq{ border:2px solid var(--govblack); color:var(--govblack); background:#fff; font-size:1rem; }
+  .btn-freq + .btn-freq{ border-left:none; }
+  .btn-freq.active{ background:var(--govblack); border-color:var(--govblack); color:#fff; font-weight:700; }
+  .btn-freq:hover:not(.active){ background:var(--govgrey); }
+  .result-panel{ background:var(--govgreen); color:#fff; }
+  .result-panel .figure{ font-size:2.75rem; font-weight:700; line-height:1.05; }
+  .swatch{ width:11px; height:11px; display:inline-block; }
+  .bar{ border:1px solid var(--govblack); display:flex; height:22px; overflow:hidden; }
+  .bar div{ height:100%; }
+  .table thead th{ border-bottom:2px solid var(--govblack) !important; font-weight:700; font-size:0.85rem; }
+  caption{ color:var(--govblack); font-weight:700; font-size:1rem; }
+  details summary{ color:var(--govblue); font-weight:700; cursor:pointer; }
+  footer{ border-top:1px solid var(--govborder); color:#505a5f; background:var(--govgrey); }
+  footer a{ color:var(--govblue); }
+  .stat-box{ border:2px solid var(--govblack); padding:1rem; }
+  .zero-note{ background:var(--govgrey); border-left:4px solid var(--govblue); padding:1rem 1.25rem; }
+  @media (max-width:576px){
+    h1{ font-size:1.6rem; }
+    .lead{ font-size:1.05rem; }
+    .result-panel .figure{ font-size:2.1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="crown-bar py-2">
+  <div class="container d-flex align-items-center gap-2">
+    <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="2" y="14" width="36" height="22" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <line x1="2" y1="14" x2="2" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <line x1="9.7" y1="14" x2="9.7" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <line x1="17.3" y1="14" x2="17.3" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <line x1="25" y1="14" x2="25" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <line x1="32.7" y1="14" x2="32.7" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <line x1="38" y1="14" x2="38" y2="36" stroke="#fff" stroke-width="2.2"/>
+      <path d="M2 14L8 3h6l2 5 2-5h6l6 11" stroke="#fff" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+    </svg>
+    <a href="/" class="fw-bold text-decoration-none" style="font-size:1.15rem; color:#fff;">hmrctax<span style="color:var(--govyellow);">.co.uk</span></a>
+  </div>
+</div>
+
+<nav class="border-bottom bg-white">
+  <div class="container">
+    <ul class="nav" style="overflow-x:auto; flex-wrap:nowrap; white-space:nowrap;">
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href="/" style="color:var(--govblack);">Home</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href="/tax-calculator/" style="color:var(--govblack);">By Salary</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href="/blog/" style="color:var(--govblack);">Blog</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href="/about/" style="color:var(--govblack);">About</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href="/contact/" style="color:var(--govblack);">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<slot />
+
+<footer class="py-5 mt-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-md-3">
+        <h2 class="h6 fw-bold" style="color:var(--govblack);">Calculator</h2>
+        <ul class="list-unstyled small">
+          <li class="mb-2"><a href="/">Income Tax calculator</a></li>
+          <li class="mb-2"><a href="/tax-calculator/">Browse by salary</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-3">
+        <h2 class="h6 fw-bold" style="color:var(--govblack);">Blog</h2>
+        <ul class="list-unstyled small">
+          <li class="mb-2"><a href="/blog/">All articles</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-3">
+        <h2 class="h6 fw-bold" style="color:var(--govblack);">Site</h2>
+        <ul class="list-unstyled small">
+          <li class="mb-2"><a href="/about/">About us</a></li>
+          <li class="mb-2"><a href="/contact/">Contact</a></li>
+          <li class="mb-2"><a href="/privacy-policy/">Privacy policy</a></li>
+          <li class="mb-2"><a href="/terms/">Terms &amp; conditions</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-md-3">
+        <h2 class="h6 fw-bold" style="color:var(--govblack);">hmrctax.co.uk</h2>
+        <p class="small text-muted">Independent Income Tax tools and guidance for the UK. Not affiliated with HM Revenue &amp; Customs or gov.uk.</p>
+      </div>
+    </div>
+  </div>
+  <div class="border-top py-3 mt-4">
+    <div class="container small text-muted d-flex flex-wrap justify-content-between gap-2">
+      <span>&copy; {new Date().getFullYear()} hmrctax.co.uk</span>
+      <span>Not an official HMRC or gov.uk service.</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

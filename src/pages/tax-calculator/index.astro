@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getSalaryList, fmt } from '../../lib/tax.js';
+
+const salaries = getSalaryList();
+const under20k = salaries.filter(s => s < 20000);
+const to50k = salaries.filter(s => s >= 20000 && s < 50000);
+const to100k = salaries.filter(s => s >= 50000 && s < 100000);
+const over100k = salaries.filter(s => s >= 100000);
+
+const popular = [20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 70000, 100000].filter(s => salaries.includes(s));
+---
+<Layout
+  title="UK Tax Calculator by Salary — Browse All | hmrctax.co.uk"
+  description="Find your take-home pay after tax for any UK salary. Browse Income Tax calculations by salary amount for the 2025/26 tax year."
+>
+  <main class="container py-4 pb-5">
+    <p class="small text-muted mb-2"><a href="/">Home</a> &gt; Tax Calculator by Salary</p>
+    <h1>UK Tax Calculator by Salary</h1>
+    <p class="lead" style="max-width:60ch;">See exactly how much take-home pay you'll get for any UK salary, after Income Tax and National Insurance for the 2025/26 tax year.</p>
+
+    <div class="my-4 p-4" style="background:var(--govgrey); border-left:4px solid var(--govgreen);">
+      <h2 class="h6 fw-bold mb-3">Most searched salaries</h2>
+      {popular.map(s => (
+        <a href={`/tax-calculator/${s}-annually/`} class="d-inline-block fw-bold text-decoration-none me-2 mb-2 px-3 py-1" style="background:#fff; border:2px solid var(--govblack); color:var(--govblack); font-size:0.9rem;">
+          {fmt(s)}
+        </a>
+      ))}
+    </div>
+
+    {[
+      ['Under £20,000', under20k],
+      ['£20,000 – £50,000', to50k],
+      ['£50,000 – £100,000', to100k],
+      ['£100,000+', over100k],
+    ].map(([heading, list]) => (
+      <div class="mb-5">
+        <div class="fw-bold h5 pb-2 mb-3" style="border-bottom:2px solid var(--govblack);">{heading}</div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-2">
+          {list.map(s => (
+            <div class="col">
+              <a href={`/tax-calculator/${s}-annually/`} class="d-block py-1" style="border-bottom:1px solid var(--govborder);">{fmt(s)} a year</a>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </main>
+</Layout>

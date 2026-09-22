@@ -1,11 +1,9 @@
+// @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+// https://astro.build/config
 export default defineConfig({
-  site: 'https://rforrupesh.github.io',
-  base: '/hmrctax',
+  site: 'https://hmrctax.co.uk',
   integrations: [sitemap()],
-  build: {
-    format: 'directory'
-  }
 });

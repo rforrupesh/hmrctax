@@ -1,14 +1,23 @@
 {
-  "name": "hmrc-tax-calculator",
+  "name": "hmrctax-site",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview"
+    "og": "node scripts/generate-og-images.mjs",
+    "build": "npm run og && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "astro": "4.15.9",
-    "@astrojs/sitemap": "3.2.1"
+    "@astrojs/sitemap": "^3.7.4",
+    "@napi-rs/canvas": "^0.1.100",
+    "astro": "^7.3.3"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

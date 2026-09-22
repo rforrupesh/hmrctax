@@ -1,0 +1,274 @@
+---
+const { prefill = 45000 } = Astro.props;
+---
+<div class="row g-4">
+  <div class="col-12 col-md-6">
+    <fieldset class="mb-4">
+      <legend class="h5 fw-bold">Your details</legend>
+      <div class="mb-3">
+        <label for="salary" class="form-label fw-bold">Gross annual salary</label>
+        <div class="form-text mb-1">Enter the amount before any deductions, in pounds.</div>
+        <div class="input-group" style="max-width:280px;">
+          <span class="input-group-text">£</span>
+          <input type="text" class="form-control" id="salary" inputmode="numeric" value={prefill}>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="pension" class="form-label fw-bold">Pension contribution</label>
+        <div class="form-text mb-1">As a percentage of salary, paid by salary sacrifice.</div>
+        <div class="input-group" style="max-width:280px;">
+          <span class="input-group-text">%</span>
+          <input type="text" class="form-control" id="pension" inputmode="numeric" value="0">
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-bold">Show figures as</label>
+        <div class="btn-group d-flex" role="group" id="freqToggle" style="max-width:400px;">
+          <button type="button" class="btn btn-freq flex-fill active" data-f="1">Yearly</button>
+          <button type="button" class="btn btn-freq flex-fill" data-f="12">Monthly</button>
+          <button type="button" class="btn btn-freq flex-fill" data-f="52">Weekly</button>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend class="h5 fw-bold">Other circumstances</legend>
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="scotland">
+        <label class="form-check-label" for="scotland">I pay Scottish Income Tax</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="student">
+        <label class="form-check-label" for="student">I'm repaying a Student Loan (Plan 2)</label>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="col-12 col-md-6">
+    <div class="result-panel p-4 mb-4">
+      <div class="small opacity-75">Estimated take-home pay <span id="freqLabel">per year</span></div>
+      <div class="figure" id="netFigure">£0</div>
+    </div>
+
+    <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
+      <svg id="donut" viewBox="0 0 150 150" width="140" height="140" style="max-width:140px; width:100%; height:auto;" role="img" aria-label="Breakdown of salary donut chart">
+        <circle cx="75" cy="75" r="60" fill="none" stroke="#dee2e6" stroke-width="22"/>
+        <g id="donutSegments" transform="rotate(-90 75 75)"></g>
+        <text id="donutCenter" x="75" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#0b0c0c"></text>
+      </svg>
+      <ul class="list-unstyled flex-grow-1 mb-0" id="legend" style="min-width:160px;"></ul>
+    </div>
+
+    <div class="bar mb-4" id="bar"></div>
+
+    <table class="table table-sm">
+      <caption class="caption-top">How your deductions are calculated</caption>
+      <thead>
+        <tr><th>Band</th><th class="text-end">Rate</th><th class="text-end">Amount</th></tr>
+      </thead>
+      <tbody id="breakdownBody"></tbody>
+    </table>
+
+    <div class="border-top pt-2" id="totals"></div>
+
+    <details class="mt-4 pt-3 border-top">
+      <summary>How this estimate is worked out</summary>
+      <div class="small text-muted mt-2" style="max-width:65ch;">
+        Figures are based on published 2025 to 2026 thresholds: a tax-free Personal Allowance of £12,570 (reduced by £1 for every £2 earned over £100,000), Basic Rate of 20% up to £50,270, Higher Rate of 40% up to £125,140, and Additional Rate of 45% above that. Class 1 National Insurance is charged at 8% between the primary threshold and the upper earnings limit, and 2% above it. This tool provides an estimate only — check <a href="https://www.gov.uk/estimate-income-tax" target="_blank" rel="noopener">gov.uk/estimate-income-tax</a> for figures specific to your circumstances.
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+(function(){
+  const salaryEl = document.getElementById('salary');
+  const pensionEl = document.getElementById('pension');
+  const scotlandEl = document.getElementById('scotland');
+  const studentEl = document.getElementById('student');
+  const freqButtons = document.querySelectorAll('#freqToggle button');
+  const netFigure = document.getElementById('netFigure');
+  const freqLabel = document.getElementById('freqLabel');
+  const breakdownBody = document.getElementById('breakdownBody');
+  const totalsEl = document.getElementById('totals');
+  const bar = document.getElementById('bar');
+
+  let freq = 1;
+  const freqNames = {1:'per year', 12:'per month', 52:'per week'};
+
+  freqButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      freqButtons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      freq = parseInt(btn.dataset.f,10);
+      render();
+    });
+  });
+
+  function parseNum(v){
+    const n = parseFloat(String(v).replace(/[^0-9.]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmt(n){ return '£' + n.toLocaleString('en-GB', {maximumFractionDigits:0}); }
+
+  function calcIncomeTax(taxable, scottish){
+    let bands;
+    if(scottish){
+      bands = [
+        {limit:2827, rate:0.19, name:'Starter rate'},
+        {limit:14921 - 2827, rate:0.20, name:'Basic rate'},
+        {limit:31092 - 14921, rate:0.21, name:'Intermediate rate'},
+        {limit:62430 - 31092, rate:0.42, name:'Higher rate'},
+        {limit:75000 - 62430, rate:0.45, name:'Advanced rate'},
+        {limit:Infinity, rate:0.48, name:'Top rate'}
+      ];
+    } else {
+      bands = [
+        {limit:37700, rate:0.20, name:'Basic rate'},
+        {limit:112500 - 37700, rate:0.40, name:'Higher rate'},
+        {limit:Infinity, rate:0.45, name:'Additional rate'}
+      ];
+    }
+    let remaining = taxable, rows = [], total = 0;
+    for(const b of bands){
+      if(remaining <= 0){ break; }
+      const amt = Math.min(remaining, b.limit);
+      if(amt > 0){
+        const tax = amt * b.rate;
+        rows.push({name:b.name, rate:b.rate, amount:amt, tax});
+        total += tax;
+      }
+      remaining -= amt;
+    }
+    return {rows, total};
+  }
+
+  function calcNI(gross){
+    const PT = 12570, UEL = 50270;
+    let ni = 0, rows = [];
+    if(gross > PT){
+      const mainBand = Math.min(gross, UEL) - PT;
+      if(mainBand > 0){
+        const t = mainBand * 0.08;
+        ni += t;
+        rows.push({name:'National Insurance', rate:0.08, amount:mainBand, tax:t});
+      }
+    }
+    if(gross > UEL){
+      const upperBand = gross - UEL;
+      const t = upperBand * 0.02;
+      ni += t;
+      rows.push({name:'National Insurance (upper)', rate:0.02, amount:upperBand, tax:t});
+    }
+    return {rows, total:ni};
+  }
+
+  function render(){
+    const salary = parseNum(salaryEl.value);
+    const pensionPct = Math.max(0, Math.min(100, parseNum(pensionEl.value)));
+    const scottish = scotlandEl.checked;
+    const student = studentEl.checked;
+
+    const pensionAmt = salary * (pensionPct/100);
+    const grossForTax = salary - pensionAmt;
+
+    let PA = 12570;
+    if(grossForTax > 100000){ PA = Math.max(0, 12570 - (grossForTax - 100000)/2); }
+    const taxableIncome = Math.max(0, grossForTax - PA);
+
+    const incomeTaxRes = calcIncomeTax(taxableIncome, scottish);
+    const niRes = calcNI(grossForTax);
+
+    let studentLoan = 0;
+    const SL_THRESHOLD = 27295;
+    if(student && grossForTax > SL_THRESHOLD){ studentLoan = (grossForTax - SL_THRESHOLD) * 0.09; }
+
+    const totalDeductions = incomeTaxRes.total + niRes.total + studentLoan + pensionAmt;
+    const net = salary - totalDeductions;
+
+    freqLabel.textContent = freqNames[freq];
+    netFigure.innerHTML = fmt(net/freq);
+
+    breakdownBody.innerHTML = '';
+    const allRows = [
+      ...incomeTaxRes.rows.map(r=>({...r, group:'tax'})),
+      ...niRes.rows.map(r=>({...r, group:'ni'}))
+    ];
+    const colors = {tax:'#00703c', ni:'#1d70b8'};
+    if(allRows.length === 0){
+      breakdownBody.innerHTML = '<tr><td colspan="3" class="text-muted">No tax or National Insurance due at this income level.</td></tr>';
+    } else {
+      allRows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="swatch" style="background:${colors[r.group]}"></span> ${r.name}</td>
+          <td class="text-end">${(r.rate!==undefined ? (r.rate*100).toFixed(0)+'%' : '')}</td>
+          <td class="text-end">${fmt(r.tax/freq)}</td>
+        `;
+        breakdownBody.appendChild(tr);
+      });
+    }
+
+    bar.innerHTML = '';
+    const segments = [
+      {name:'Take-home pay', v:net, c:'#00703c'},
+      {name:'Income Tax', v:incomeTaxRes.total, c:'#1d70b8'},
+      {name:'National Insurance', v:niRes.total, c:'#5694ca'},
+      {name:'Student Loan', v:studentLoan, c:'#4c2c92'},
+      {name:'Pension', v:pensionAmt, c:'#b1b4b6'}
+    ];
+    segments.forEach(s=>{
+      if(s.v > 0){
+        const div = document.createElement('div');
+        div.style.background = s.c;
+        div.style.width = (s.v/salary*100)+'%';
+        bar.appendChild(div);
+      }
+    });
+
+    const donutSegments = document.getElementById('donutSegments');
+    const donutCenter = document.getElementById('donutCenter');
+    const legendEl = document.getElementById('legend');
+    donutSegments.innerHTML = '';
+    legendEl.innerHTML = '';
+    const R = 60, C = 2*Math.PI*R;
+    let offset = 0;
+    segments.filter(s=>s.v>0).forEach(s=>{
+      const frac = salary > 0 ? s.v/salary : 0;
+      const dash = frac*C;
+      const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx','75');
+      circle.setAttribute('cy','75');
+      circle.setAttribute('r', R);
+      circle.setAttribute('fill','none');
+      circle.setAttribute('stroke', s.c);
+      circle.setAttribute('stroke-width','22');
+      circle.setAttribute('stroke-dasharray', `${dash} ${C-dash}`);
+      circle.setAttribute('stroke-linecap','butt');
+      circle.setAttribute('stroke-dashoffset', String(-offset));
+      donutSegments.appendChild(circle);
+      offset += dash;
+
+      const li = document.createElement('li');
+      li.style.cssText = 'display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;padding:0.25rem 0;';
+      li.innerHTML = `<span class="swatch" style="background:${s.c}"></span>${s.name}<span style="margin-left:auto;font-weight:700;">${(frac*100).toFixed(0)}%</span>`;
+      legendEl.appendChild(li);
+    });
+    donutCenter.textContent = (salary > 0 ? Math.round(net/salary*100) : 0) + '%';
+
+    totalsEl.innerHTML = `
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Gross salary</span><span>${fmt(salary/freq)}</span></div>
+      ${pensionAmt>0?`<div class="d-flex justify-content-between py-1 border-bottom small"><span>Pension contribution</span><span>-${fmt(pensionAmt/freq)}</span></div>`:''}
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Income Tax</span><span>-${fmt(incomeTaxRes.total/freq)}</span></div>
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>National Insurance</span><span>-${fmt(niRes.total/freq)}</span></div>
+      ${studentLoan>0?`<div class="d-flex justify-content-between py-1 border-bottom small"><span>Student Loan (Plan 2)</span><span>-${fmt(studentLoan/freq)}</span></div>`:''}
+      <div class="d-flex justify-content-between py-2 fw-bold fs-5" style="color:#00703c;"><span>Take-home pay</span><span>${fmt(net/freq)}</span></div>
+    `;
+  }
+
+  salaryEl.addEventListener('input', render);
+  pensionEl.addEventListener('input', render);
+  scotlandEl.addEventListener('change', render);
+  studentEl.addEventListener('change', render);
+  render();
+})();
+</script>
