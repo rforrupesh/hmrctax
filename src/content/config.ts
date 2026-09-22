@@ -10,6 +10,7 @@ const blog = defineCollection({
     tags: z.array(z.string()).default([]),
     category: z.string().optional(),
     author: z.string().default('hmrctax team'),
+    image: z.string().optional(),
     takeaways: z.array(z.string()).default([]),
   }),
 });

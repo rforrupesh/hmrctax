@@ -55,6 +55,10 @@ const dateFmt = (d?: Date) =>
       <h1 class="post-hero-title mt-2">{title}</h1>
       <p class="post-hero-lead mb-4">{description}</p>
 
+      {post.data.image && (
+        <img src={post.data.image} alt={title} class="post-hero-thumb mb-4" loading="eager" />
+      )}
+
       <div class="d-flex align-items-center gap-2">
         <span class="post-hero-byline small">
           {updatedDate ? <>Updated on {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
@@ -159,6 +163,12 @@ const dateFmt = (d?: Date) =>
   .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
   .post-hero-byline{ color:rgba(255,255,255,0.85); line-height:1.5; }
   .post-hero-byline a{ color:#fff; text-decoration:underline; }
+  .post-hero-thumb{
+    width:100%;
+    max-height:420px;
+    object-fit:cover;
+    border-radius:10px !important;
+  }
   .author-avatar-hero{
     width:40px; height:40px; flex:0 0 auto;
     display:flex; align-items:center; justify-content:center;
