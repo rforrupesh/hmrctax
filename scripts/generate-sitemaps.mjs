@@ -7,13 +7,19 @@
 //
 // Run this BEFORE `astro build` — see package.json "build" script.
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, readdirSync } from 'fs';
 import { getSalaryList } from '../src/lib/tax.js';
 
 const SITE = 'https://rforrupesh.github.io';
 const BASE = '/hmrctax/';
 
 const url = (p) => `${SITE}${BASE}${p}`;
+
+// Blog slugs are read straight from src/content/blog/ so a new .md file
+// shows up in the sitemap automatically — nothing to update here.
+const blogSlugs = readdirSync('src/content/blog')
+  .filter((f) => f.endsWith('.md'))
+  .map((f) => f.replace(/\.md$/, ''));
 
 // ---- 1. Static / content pages ----
 const pages = [
@@ -23,7 +29,7 @@ const pages = [
   'privacy-policy/',
   'terms/',
   'blog/',
-  'blog/2025-26-tax-year-changes/',
+  ...blogSlugs.map((slug) => `blog/${slug}/`),
 ];
 
 const pagesXml = `<?xml version="1.0" encoding="UTF-8"?>
