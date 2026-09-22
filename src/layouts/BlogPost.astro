@@ -48,12 +48,11 @@ const dateFmt = (d?: Date) =>
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
   <main class="container py-4 pb-5">
     <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; {title}</p>
+    <span class="post-category-pill text-capitalize mb-3 d-inline-block">
+      <a href={withBase(`tax-guides/category/${slugify(category)}/`)}>{category.replace(/-/g, ' ')}</a>
+    </span>
     <h1>{title}</h1>
     <p class="lead" style="max-width:65ch;">{description}</p>
-    <p class="small text-muted">
-      Published {dateFmt(publishDate)}{updatedDate && <> &middot; Updated {dateFmt(updatedDate)}</>}
-      {' '}&middot; By <a href={withBase(`author/${slugify(author)}/`)}>{author}</a>
-    </p>
 
     <div class="row g-4 mt-2">
       <div class="col-12 col-lg-8 order-2 order-lg-1">
@@ -65,6 +64,9 @@ const dateFmt = (d?: Date) =>
           <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
             <span class="small fw-bold me-1">Category:</span>
             <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="tag-pill category-pill-link text-capitalize text-decoration-none">{category.replace(/-/g, ' ')}</a>
+            <span class="small text-muted ms-2">
+              Published {dateFmt(publishDate)}{updatedDate && <> &middot; Updated {dateFmt(updatedDate)}</>}
+            </span>
           </div>
           {tags.length > 0 && (
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
@@ -196,6 +198,20 @@ const dateFmt = (d?: Date) =>
     border-radius:999px !important;
   }
   .tag-pill:hover{ background:var(--govblack); color:#fff !important; }
+
+  .post-category-pill a{
+    display:inline-block;
+    background:var(--govblack);
+    color:#fff !important;
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    padding:0.3rem 0.75rem;
+    border-radius:999px !important;
+    text-decoration:none;
+  }
+  .post-category-pill a:hover{ background:var(--govblue); }
   .author-avatar-sm{
     width:36px; height:36px; flex:0 0 auto;
     display:flex; align-items:center; justify-content:center;
