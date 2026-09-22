@@ -2,7 +2,6 @@
 title: "What Salary Do You Need for a £2,000 Monthly Take-Home?"
 description: "This article provides general information and estimates for the UK 2025/26 tax year. It is not personal tax or financial advice. Your actual pay can differ based on your tax code, pension, student loan, location and other circumstances."
 publishDate: 2025-04-06
-image: "https://cdn.pixabay.com/photo/2021/10/04/20/17/father-6680949_1280.png"
 tags: ["tax guide", ]
 ---
 

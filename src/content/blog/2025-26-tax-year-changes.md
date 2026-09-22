@@ -3,7 +3,7 @@ title: "2025/26 UK Tax Year: What Changed"
 description: "A summary of the key Income Tax and National Insurance changes for the 2025/26 tax year."
 publishDate: 2025-04-06
 updatedDate: 2026-07-11
-image: "https://plus.unsplash.com/premium_photo-1661322640130-f6a1e2c36653?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+image: "https://images.unsplash.com/photo-1707902665498-a202981fb5ac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 tags: ["tax-year", "rates", "national-insurance"]
 takeaways:
   - "First key point"
