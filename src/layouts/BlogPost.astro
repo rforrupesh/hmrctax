@@ -68,7 +68,12 @@ const heroGradient = heroGradientFrom(dominantColor);
 
     {post.data.image && (
       <div class="post-hero-thumb-wrap">
-        <img src={post.data.image} alt={title} class="post-hero-thumb" loading="eager" />
+        <img
+          src={/^https?:\/\//i.test(post.data.image) ? post.data.image : withBase(post.data.image)}
+          alt={title}
+          class="post-hero-thumb"
+          loading="eager"
+        />
       </div>
     )}
   </div>

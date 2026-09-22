@@ -67,11 +67,12 @@ export async function getDominantColor(src) {
           clearTimeout(timeout);
         }
       } else {
-        // A frontmatter value like "/images/foo.jpg" is a public-folder
-        // path, not a filesystem path — resolve it before handing it to
-        // loadImage, which only understands real file paths/URLs.
-        const localPath = src.startsWith('/') ? path.join(PUBLIC_DIR, src) : src;
-        img = await loadImage(localPath);
+        // Accept any local path form ("/images/x.jpg", "./images/x.jpg",
+        // "images/x.jpg") — all of these mean "relative to /public" in
+        // this project, not a real filesystem path, so strip any leading
+        // "/" or "./" before joining with PUBLIC_DIR.
+        const relPath = src.replace(/^\.?\//, '');
+        img = await loadImage(path.join(PUBLIC_DIR, relPath));
       }
       const SIZE = 32;
       const canvas = createCanvas(SIZE, SIZE);
