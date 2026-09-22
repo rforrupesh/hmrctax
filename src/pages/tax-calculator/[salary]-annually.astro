@@ -67,7 +67,7 @@ const niRatePct = result.niRows.length ? Math.round(result.niRows[0].rate * 100)
 
 const faqs = [
   {
-    q: `What percentage of ${fmt(amount)} do I take home?`,
+    q: `What percentage of ${kLabel} do I take home?`,
     a: `After the estimated Income Tax and National Insurance, you keep approximately ${takeHomePct}% of a ${fmt(amount)} gross annual salary. Your estimated total deductions represent around ${totalDeductionPct}% of your gross pay.`,
   },
   {
@@ -75,12 +75,12 @@ const faqs = [
     a: `The applicable Income Tax rate depends on how much of your taxable income falls into each tax band. For this calculation, the estimated Income Tax is ${fmt(result.tax)}, with the applicable marginal tax band shown as ${incomeTaxRatePct}%.`,
   },
   {
-    q: `What National Insurance rate applies to ${fmt(amount)}?`,
+    q: `What National Insurance rate applies to ${kLabel}?`,
     a: `For a standard employee, the relevant Class 1 National Insurance rate is ${niRatePct}% on earnings within the applicable band. Earnings above the Upper Earnings Limit are generally charged at 2% for 2026/27.`,
   },
   {
     q: `How much of my ${fmt(amount)} salary goes to tax and National Insurance?`,
-    a: `Your estimated Income Tax and National Insurance total ${fmt(totalDeductions)} from a ${fmt(amount)} gross salary. That represents approximately ${totalDeductionPct}% of your annual gross pay.`,
+    a: `Your estimated Income Tax and National Insurance total ${fmt(totalDeductions)} from a ${kLabel} gross salary. That represents approximately ${totalDeductionPct}% of your annual gross pay.`,
   },
   {
     q: `What assumptions does this calculation make?`,
