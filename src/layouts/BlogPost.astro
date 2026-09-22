@@ -19,15 +19,22 @@ const category = categoryOf(post);
 const author = authorOf(post);
 
 const allPosts = await getCollection('blog');
-const related = allPosts
-  .filter((p) => p.slug !== post.slug)
-  .sort((a, b) => {
-    const aShared = a.data.tags.filter((t) => tags.includes(t)).length;
-    const bShared = b.data.tags.filter((t) => tags.includes(t)).length;
-    if (aShared !== bShared) return bShared - aShared;
-    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
-  })
-  .slice(0, 2);
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const others = allPosts.filter((p) => p.slug !== post.slug);
+const differentCategory = shuffle(others.filter((p) => categoryOf(p) !== category));
+const sameCategory = shuffle(others.filter((p) => categoryOf(p) === category));
+// Prefer posts from a different category so "related" doesn't just mean
+// "same tag" — falls back to same-category posts if there aren't enough.
+const related = [...differentCategory, ...sameCategory].slice(0, 3);
 
 // Only top-level (##) headings go in the TOC to keep it short and scannable.
 const toc = headings.filter((h) => h.depth === 2);
@@ -105,19 +112,25 @@ const dateFmt = (d?: Date) =>
             </ul>
           </nav>
         )}
-
-        {related.length > 0 && (
-          <div class="stat-box">
-            <h2 class="h6 fw-bold text-uppercase mb-2" style="letter-spacing:0.03em;">Related articles</h2>
-            <ul class="list-unstyled small mb-0">
-              {related.map((p) => (
-                <li class="mb-2"><a href={withBase(`tax-guides/${p.slug}/`)}>{p.data.title}</a></li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
+
+    {related.length > 0 && (
+      <section class="related-posts mt-5 pt-4 border-top">
+        <h2 class="h5 fw-bold mb-4">You might also like</h2>
+        <div class="row g-4">
+          {related.map((p) => (
+            <div class="col-12 col-md-4">
+              <a href={withBase(`tax-guides/${p.slug}/`)} class="related-post-link text-decoration-none d-block">
+                <p class="related-post-category small mb-1 text-capitalize">{categoryOf(p).replace(/-/g, ' ')}</p>
+                <h3 class="related-post-title mb-2">{p.data.title}</h3>
+                <p class="related-post-excerpt small mb-0">{p.data.description}</p>
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
   </main>
 </Layout>
 
@@ -198,6 +211,23 @@ const dateFmt = (d?: Date) =>
     background:var(--govblack); color:#fff;
     border-radius:50% !important;
     font-size:0.85rem; font-weight:700;
+  }
+
+  .related-post-category{ color:#505a5f; text-transform:uppercase; letter-spacing:0.03em; font-size:0.72rem; }
+  .related-post-title{
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight:700;
+    font-size:1.05rem;
+    line-height:1.35;
+    color:var(--govblack);
+  }
+  .related-post-link:hover .related-post-title{ color:var(--govblue); text-decoration:underline; }
+  .related-post-excerpt{
+    color:#505a5f;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
   }
 </style>
 
