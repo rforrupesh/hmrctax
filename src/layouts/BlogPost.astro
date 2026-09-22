@@ -48,21 +48,27 @@ const dateFmt = (d?: Date) =>
 <Layout title={`${title} | hmrctax.co.uk`} description={description}>
   <div class="post-hero">
     <div class="container py-5">
-      <p class="post-hero-breadcrumb small mb-3">
-        <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
-      </p>
-     
-      <h1 class="post-hero-title mt-2">{title}</h1>
-      <p class="post-hero-lead mb-4">{description}</p>
+      <div class="row align-items-center g-4">
+        <div class={post.data.image ? "col-12 col-lg-7" : "col-12"}>
+          <p class="post-hero-breadcrumb small mb-3">
+            <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
+          </p>
 
-      {post.data.image && (
-        <img src={post.data.image} alt={title} class="post-hero-thumb mb-4" loading="eager" />
-      )}
+          <h1 class="post-hero-title mt-2">{title}</h1>
+          <p class="post-hero-lead mb-4">{description}</p>
 
-      <div class="d-flex align-items-center gap-2">
-        <span class="post-hero-byline small">
-          {updatedDate ? <>Updated on {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
-        </span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="post-hero-byline small">
+              {updatedDate ? <>Updated on {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
+            </span>
+          </div>
+        </div>
+
+        {post.data.image && (
+          <div class="col-12 col-lg-5">
+            <img src={post.data.image} alt={title} class="post-hero-thumb" loading="eager" />
+          </div>
+        )}
       </div>
     </div>
   </div>
@@ -165,7 +171,7 @@ const dateFmt = (d?: Date) =>
   .post-hero-byline a{ color:#fff; text-decoration:underline; }
   .post-hero-thumb{
     width:100%;
-    max-height:420px;
+    max-height:280px;
     object-fit:cover;
     border-radius:10px !important;
   }
