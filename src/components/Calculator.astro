@@ -1,5 +1,37 @@
 ---
+import { calculateTax, fmt } from '../lib/tax.js';
+
 const { prefill = 45000 } = Astro.props;
+
+// Server-side pre-calculation so the initial figures are baked into the
+// HTML (visible in "View Page Source") instead of only appearing after
+// client-side JS runs.
+const result = calculateTax(prefill);
+const bandRows = [
+  ...result.taxRows.map((r) => ({ ...r, group: 'tax' })),
+  ...result.niRows.map((r) => ({ ...r, group: 'ni' })),
+];
+const colors = { tax: '#00703c', ni: '#1d70b8' };
+
+const segments = [
+  { name: 'Take-home pay', v: result.net, c: '#00703c' },
+  { name: 'Income Tax', v: result.tax, c: '#1d70b8' },
+  { name: 'National Insurance', v: result.ni, c: '#5694ca' },
+  { name: 'Student Loan', v: result.studentLoan, c: '#4c2c92' },
+  { name: 'Pension', v: result.pensionAmt, c: '#b1b4b6' },
+].filter((s) => s.v > 0);
+
+const R = 60, CIRC = 2 * Math.PI * R;
+let donutOffset = 0;
+const donutData = segments.map((s) => {
+  const frac = prefill > 0 ? s.v / prefill : 0;
+  const dash = frac * CIRC;
+  const entry = { ...s, dash, gap: CIRC - dash, offset: -donutOffset, pct: Math.round(frac * 100) };
+  donutOffset += dash;
+  return entry;
+});
+const takeHomePct = prefill > 0 ? Math.round((result.net / prefill) * 100) : 0;
+const barSegments = segments.map((s) => ({ ...s, pct: prefill > 0 ? (s.v / prefill) * 100 : 0 }));
 ---
 <div class="row g-4">
   <div class="col-12 col-md-6">
@@ -46,29 +78,60 @@ const { prefill = 45000 } = Astro.props;
   <div class="col-12 col-md-6">
     <div class="result-panel p-4 mb-4">
       <div class="small result-panel-label">Estimated take-home pay <span id="freqLabel">per year</span></div>
-      <div class="figure" id="netFigure">£0</div>
+      <div class="figure" id="netFigure">{fmt(result.net)}</div>
     </div>
 
     <div class="d-flex align-items-center gap-4 flex-wrap mb-4">
       <svg id="donut" viewBox="0 0 150 150" width="140" height="140" style="max-width:140px; width:100%; height:auto;" role="img" aria-label="Breakdown of salary donut chart">
         <circle cx="75" cy="75" r="60" fill="none" stroke="#dee2e6" stroke-width="22"/>
-        <g id="donutSegments" transform="rotate(-90 75 75)"></g>
-        <text id="donutCenter" x="75" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#0b0c0c"></text>
+        <g id="donutSegments" transform="rotate(-90 75 75)">
+          {donutData.map((s) => (
+            <circle cx="75" cy="75" r={R} fill="none" stroke={s.c} stroke-width="22" stroke-dasharray={`${s.dash} ${s.gap}`} stroke-dashoffset={s.offset} stroke-linecap="butt"/>
+          ))}
+        </g>
+        <text id="donutCenter" x="75" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#0b0c0c">{takeHomePct}%</text>
       </svg>
-      <ul class="list-unstyled flex-grow-1 mb-0" id="legend" style="min-width:160px;"></ul>
+      <ul class="list-unstyled flex-grow-1 mb-0" id="legend" style="min-width:160px;">
+        {donutData.map((s) => (
+          <li style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;padding:0.25rem 0;">
+            <span class="swatch" style={`background:${s.c}`}></span>{s.name}<span style="margin-left:auto;font-weight:700;">{s.pct}%</span>
+          </li>
+        ))}
+      </ul>
     </div>
 
-    <div class="bar mb-4" id="bar"></div>
+    <div class="bar mb-4" id="bar">
+      {barSegments.map((s) => (
+        <div style={`background:${s.c}; width:${s.pct}%;`}></div>
+      ))}
+    </div>
 
     <table class="table table-sm">
       <caption class="caption-top">How your deductions are calculated</caption>
       <thead>
         <tr><th>Band</th><th class="text-end">Rate</th><th class="text-end">Amount</th></tr>
       </thead>
-      <tbody id="breakdownBody"></tbody>
+      <tbody id="breakdownBody">
+        {bandRows.length === 0 ? (
+          <tr><td colspan="3" class="text-muted">No tax or National Insurance due at this income level.</td></tr>
+        ) : bandRows.map((r) => (
+          <tr>
+            <td><span class="swatch" style={`background:${colors[r.group]}`}></span> {r.name}</td>
+            <td class="text-end">{(r.rate * 100).toFixed(0)}%</td>
+            <td class="text-end">{fmt(r.tax)}</td>
+          </tr>
+        ))}
+      </tbody>
     </table>
 
-    <div class="border-top pt-2" id="totals"></div>
+    <div class="border-top pt-2" id="totals">
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Gross salary</span><span>{fmt(result.salary)}</span></div>
+      {result.pensionAmt > 0 && <div class="d-flex justify-content-between py-1 border-bottom small"><span>Pension contribution</span><span>-{fmt(result.pensionAmt)}</span></div>}
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>Income Tax</span><span>-{fmt(result.tax)}</span></div>
+      <div class="d-flex justify-content-between py-1 border-bottom small"><span>National Insurance</span><span>-{fmt(result.ni)}</span></div>
+      {result.studentLoan > 0 && <div class="d-flex justify-content-between py-1 border-bottom small"><span>Student Loan (Plan 2)</span><span>-{fmt(result.studentLoan)}</span></div>}
+      <div class="d-flex justify-content-between py-2 fw-bold fs-5" style="color:#00703c;"><span>Take-home pay</span><span>{fmt(result.net)}</span></div>
+    </div>
 
     <details class="mt-4 pt-3 border-top">
       <summary>How this estimate is worked out</summary>
