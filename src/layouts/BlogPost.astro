@@ -51,27 +51,17 @@ const dateFmt = (d?: Date) =>
     style={post.data.image ? `background-image: linear-gradient(rgba(10,15,20,0.72), rgba(10,15,20,0.72)), url('${post.data.image}');` : ''}
   >
     <div class="container py-5">
-      <div class="row align-items-center g-4">
-        <div class={post.data.image ? "col-12 col-lg-7" : "col-12"}>
-          <p class="post-hero-breadcrumb small mb-3">
-            <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
-          </p>
+      <p class="post-hero-breadcrumb small mb-3">
+        <a href={withBase()}>Home</a> / <a href={withBase(`tax-guides/`)}>Tax Guides</a>
+      </p>
 
-          <h1 class="post-hero-title mt-2">{title}</h1>
-          <p class="post-hero-lead mb-4">{description}</p>
+      <h1 class="post-hero-title mt-2">{title}</h1>
+      <p class="post-hero-lead mb-4">{description}</p>
 
-          <div class="d-flex align-items-center gap-2">
-            <span class="post-hero-byline small">
-              {updatedDate ? <>Updated on {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
-            </span>
-          </div>
-        </div>
-
-        {post.data.image && (
-          <div class="col-12 col-lg-5">
-            <img src={post.data.image} alt={title} class="post-hero-thumb" loading="eager" />
-          </div>
-        )}
+      <div class="d-flex align-items-center gap-2">
+        <span class="post-hero-byline small">
+          {updatedDate ? <>Updated on {dateFmt(updatedDate)}</> : <>Published: {dateFmt(publishDate)}</>}
+        </span>
       </div>
     </div>
   </div>
@@ -174,12 +164,6 @@ const dateFmt = (d?: Date) =>
   .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
   .post-hero-byline{ color:rgba(255,255,255,0.85); line-height:1.5; }
   .post-hero-byline a{ color:#fff; text-decoration:underline; }
-  .post-hero-thumb{
-    width:100%;
-    max-height:280px;
-    object-fit:cover;
-    border-radius:10px !important;
-  }
   .author-avatar-hero{
     width:40px; height:40px; flex:0 0 auto;
     display:flex; align-items:center; justify-content:center;
