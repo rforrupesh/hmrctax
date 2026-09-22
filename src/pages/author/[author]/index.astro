@@ -1,0 +1,56 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import PostGrid from '../../../components/PostGrid.astro';
+import { withBase } from '../../../lib/url.js';
+import { slugify, authorOf, initials } from '../../../lib/blog.js';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const authorMap = new Map();
+
+  for (const post of allPosts) {
+    const name = authorOf(post);
+    const slug = slugify(name);
+    if (!authorMap.has(slug)) authorMap.set(slug, { name, posts: [] });
+    authorMap.get(slug).posts.push(post);
+  }
+
+  return Array.from(authorMap.entries()).map(([author, { name, posts }]) => ({
+    params: { author },
+    props: {
+      name,
+      posts: posts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()),
+    },
+  }));
+}
+
+const { name, posts } = Astro.props;
+---
+<Layout title={`${name} | hmrctax.co.uk`} description={`Tax guides written by ${name} on hmrctax.co.uk.`}>
+  <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
+    <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Author</p>
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <span class="author-avatar-lg">{initials(name)}</span>
+      <div>
+        <h1 class="mb-1" style="font-family: Georgia, 'Times New Roman', serif; font-size:1.9rem;">{name}</h1>
+        <p class="small text-muted mb-0">Writer at hmrctax.co.uk &middot; {posts.length} guide{posts.length === 1 ? '' : 's'} published</p>
+      </div>
+    </div>
+    <p class="lead mb-4" style="max-width:60ch;">Plain-English UK Income Tax and National Insurance guides, written to help you understand your payslip and your tax code.</p>
+
+    <PostGrid posts={posts} />
+  </main>
+</Layout>
+
+<style>
+  .author-avatar-lg{
+    width:64px; height:64px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--govblack); color:#fff;
+    border-radius:50% !important;
+    font-size:1.3rem; font-weight:700;
+    font-family: Georgia, serif;
+  }
+</style>

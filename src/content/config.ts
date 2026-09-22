@@ -8,6 +8,8 @@ const blog = defineCollection({
     publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
+    category: z.string().optional(),
+    author: z.string().default('hmrctax team'),
   }),
 });
 

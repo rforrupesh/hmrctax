@@ -1,0 +1,42 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import PostGrid from '../../../../components/PostGrid.astro';
+import { withBase } from '../../../../lib/url.js';
+import { slugify, categoryOf } from '../../../../lib/blog.js';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const catMap = new Map();
+
+  for (const post of allPosts) {
+    const label = categoryOf(post);
+    const slug = slugify(label);
+    if (!catMap.has(slug)) catMap.set(slug, { label, posts: [] });
+    catMap.get(slug).posts.push(post);
+  }
+
+  return Array.from(catMap.entries()).map(([category, { label, posts }]) => ({
+    params: { category },
+    props: {
+      label,
+      posts: posts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()),
+    },
+  }));
+}
+
+const { label, posts } = Astro.props;
+const title = label.replace(/-/g, ' ');
+---
+<Layout title={`${title} | hmrctax.co.uk`} description={`UK tax guides in the "${title}" category.`}>
+  <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
+    <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Category</p>
+    <h1 class="blog-index-heading text-capitalize">{title}</h1>
+    <p class="lead mb-4" style="max-width:60ch;">{posts.length} guide{posts.length === 1 ? '' : 's'} in {title}.</p>
+    <PostGrid posts={posts} />
+  </main>
+</Layout>
+
+<style>
+  .blog-index-heading{ font-family: Georgia, "Times New Roman", serif; font-size:2.4rem; margin-bottom:0.5rem; }
+</style>

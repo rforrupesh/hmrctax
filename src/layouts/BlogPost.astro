@@ -5,6 +5,7 @@
 // src/content/blog/, nothing else.
 import Layout from './Layout.astro';
 import { withBase } from '../lib/url.js';
+import { slugify, categoryOf, authorOf, formatDate as fmtDate } from '../lib/blog.js';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -14,6 +15,8 @@ interface Props {
 
 const { post, headings } = Astro.props;
 const { title, description, publishDate, updatedDate, tags } = post.data;
+const category = categoryOf(post);
+const author = authorOf(post);
 
 const allPosts = await getCollection('blog');
 const related = allPosts
@@ -41,7 +44,16 @@ const dateFmt = (d?: Date) =>
     <p class="lead" style="max-width:65ch;">{description}</p>
     <p class="small text-muted">
       Published {dateFmt(publishDate)}{updatedDate && <> &middot; Updated {dateFmt(updatedDate)}</>}
+      {' '}&middot; By <a href={withBase(`author/${slugify(author)}/`)}>{author}</a>
+      {' '}&middot; <a href={withBase(`tax-guides/category/${slugify(category)}/`)} class="text-capitalize">{category.replace(/-/g, ' ')}</a>
     </p>
+    {tags.length > 0 && (
+      <p class="d-flex flex-wrap gap-2 mb-3">
+        {tags.map((t) => (
+          <a href={withBase(`tax-guides/tag/${slugify(t)}/`)} class="tag-pill text-capitalize text-decoration-none">{t.replace(/-/g, ' ')}</a>
+        ))}
+      </p>
+    )}
 
     <div class="row g-4 mt-2">
       <div class="col-12 col-lg-8 order-2 order-lg-1">
@@ -68,6 +80,14 @@ const dateFmt = (d?: Date) =>
       </div>
 
       <div class="col-12 col-lg-4 order-1 order-lg-2">
+        <div class="stat-box mb-4">
+          <h2 class="h6 fw-bold text-uppercase mb-2" style="letter-spacing:0.03em;">Written by</h2>
+          <a href={withBase(`author/${slugify(author)}/`)} class="d-flex align-items-center gap-2 text-decoration-none">
+            <span class="author-avatar-sm">{author.trim().charAt(0).toUpperCase()}</span>
+            <span class="small fw-semibold" style="color:var(--govblack);">{author}</span>
+          </a>
+        </div>
+
         {toc.length > 0 && (
           <nav class="stat-box mb-4" aria-label="Table of contents">
             <h2 class="h6 fw-bold text-uppercase mb-2" style="letter-spacing:0.03em;">On this page</h2>
@@ -154,6 +174,24 @@ const dateFmt = (d?: Date) =>
     font-size: 0.85rem;
   }
   .blog-article :global(tbody tr:nth-child(even)) { background: var(--govgrey); }
+
+  .tag-pill{
+    display:inline-block;
+    background:var(--govgrey);
+    border:1px solid var(--govborder);
+    color:var(--govblack) !important;
+    font-size:0.75rem;
+    padding:0.25rem 0.6rem;
+    border-radius:999px !important;
+  }
+  .tag-pill:hover{ background:var(--govblack); color:#fff !important; }
+  .author-avatar-sm{
+    width:36px; height:36px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--govblack); color:#fff;
+    border-radius:50% !important;
+    font-size:0.85rem; font-weight:700;
+  }
 </style>
 
 <script>
