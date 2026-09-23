@@ -1,7 +1,7 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { withBase } from '../../lib/url.js';
+import StaticPage from '../../layouts/StaticPage.astro';
 import { TAX_YEAR } from '../../lib/tax.js';
+import { slugify } from '../../lib/blog.js';
 
 const faqGroups = [
   {
@@ -127,43 +127,47 @@ const keyFigures = [
   { label: 'Higher Rate Threshold', value: '£50,270' },
   { label: 'Higher Rate', value: '40%' },
 ];
+
+// One TOC / anchor entry per FAQ group, same "##" convention BlogPost and
+// StaticPage use for their table of contents.
+const headings = faqGroups.map((section) => ({
+  depth: 2,
+  slug: slugify(section.group),
+  text: section.group,
+}));
 ---
-<Layout
-  title={`UK Tax FAQs ${TAX_YEAR} — Income Tax, NI, Pensions & Student Loans | salary-calc.co.uk`}
+<StaticPage
+  title="Frequently Asked Questions"
   description={`Clear, sourced answers on UK Income Tax, National Insurance, pensions, self-employment, student loans and family benefits for the ${TAX_YEAR} tax year.`}
+  heroLead={`Clear answers on UK tax, National Insurance, and take-home pay for the ${TAX_YEAR} tax year.`}
+  headings={headings}
 >
-  <main class="container py-4 pb-5">
-    <p class="small text-muted mb-2"><a href={withBase()}>Home</a> &gt; Frequently Asked Questions</p>
-    <h1>Frequently Asked Questions</h1>
-    <p class="lead" style="max-width:65ch;">Clear answers on UK tax, National Insurance, and take-home pay for the {TAX_YEAR} tax year.</p>
-
-    <h2 class="h6 fw-bold text-uppercase mt-4 mb-3" style="color:#505a5f; letter-spacing:0.03em;">Key {TAX_YEAR.slice(0, 4)} tax figures (UK)</h2>
-    <div class="row g-3 mb-5">
-      {keyFigures.map((f) => (
-        <div class="col-6 col-md-3">
-          <div class="stat-box h-100">
-            <div class="small text-muted">{f.label}</div>
-            <div class="fw-bold" style="font-size:1.5rem;">{f.value}</div>
-          </div>
+  <h2 class="h6 fw-bold text-uppercase mt-0 mb-3" style="color:#505a5f; letter-spacing:0.03em;">Key {TAX_YEAR.slice(0, 4)} tax figures (UK)</h2>
+  <div class="row g-3 mb-5">
+    {keyFigures.map((f) => (
+      <div class="col-6 col-md-3">
+        <div class="stat-box h-100">
+          <div class="small text-muted">{f.label}</div>
+          <div class="fw-bold" style="font-size:1.5rem;">{f.value}</div>
         </div>
-      ))}
-    </div>
-
-    {faqGroups.map((section) => (
-      <section class="mb-5">
-        <h2 class="h4 fw-bold mb-3" style="color:var(--govblack);">{section.group}</h2>
-        {section.items.map((item) => (
-          <details class="mb-3 pb-3" style="border-bottom:1px solid var(--govborder);">
-            <summary class="h6 mb-0">{item.q}</summary>
-            <p class="mt-2 mb-0" style="max-width:70ch;">{item.a}</p>
-          </details>
-        ))}
-      </section>
+      </div>
     ))}
+  </div>
 
-    <div class="zero-note">
-      <p class="small mb-1"><strong>Sources:</strong> <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC Income Tax rates</a>, <a href="https://www.gov.uk/scottish-income-tax" target="_blank" rel="noopener">GOV.UK Scottish Income Tax</a>, <a href="https://www.gov.uk/repaying-your-student-loan/what-you-pay" target="_blank" rel="noopener">GOV.UK Student Loans</a>, and House of Commons Library research briefings on the High Income Child Benefit Charge and employer National Insurance.</p>
-      <p class="small mb-0">This page is for general guidance only and does not constitute financial or tax advice. Figures are correct for the {TAX_YEAR} tax year as published by HMRC and the Scottish Government; always check <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">gov.uk</a> for the latest position before making decisions.</p>
-    </div>
-  </main>
-</Layout>
+  {faqGroups.map((section) => (
+    <section id={slugify(section.group)} class="mb-5">
+      <h2 class="h4 fw-bold mb-3" style="color:var(--govblack); scroll-margin-top:1rem;">{section.group}</h2>
+      {section.items.map((item) => (
+        <details class="mb-3 pb-3" style="border-bottom:1px solid var(--govborder);">
+          <summary class="h6 mb-0">{item.q}</summary>
+          <p class="mt-2 mb-0" style="max-width:70ch;">{item.a}</p>
+        </details>
+      ))}
+    </section>
+  ))}
+
+  <div class="zero-note">
+    <p class="small mb-1"><strong>Sources:</strong> <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC Income Tax rates</a>, <a href="https://www.gov.uk/scottish-income-tax" target="_blank" rel="noopener">GOV.UK Scottish Income Tax</a>, <a href="https://www.gov.uk/repaying-your-student-loan/what-you-pay" target="_blank" rel="noopener">GOV.UK Student Loans</a>, and House of Commons Library research briefings on the High Income Child Benefit Charge and employer National Insurance.</p>
+    <p class="small mb-0">This page is for general guidance only and does not constitute financial or tax advice. Figures are correct for the {TAX_YEAR} tax year as published by HMRC and the Scottish Government; always check <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">gov.uk</a> for the latest position before making decisions.</p>
+  </div>
+</StaticPage>
