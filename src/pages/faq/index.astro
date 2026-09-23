@@ -34,6 +34,40 @@ const faqGroups = [
     ],
   },
   {
+    group: 'Pensions & Salary Sacrifice',
+    items: [
+      {
+        q: 'My payslip shows a lower pension contribution than I expected — why?',
+        a: `Auto-enrolment contributions usually aren't calculated on your whole salary. Most schemes use "qualifying earnings" — the slice between £6,240 and £50,270 — so the first £6,240 is ignored completely. On a £32,000 salary with a 5% employee contribution, you're not contributing 5% of £32,000; you're contributing 5% of £25,760 (£32,000 minus £6,240), which comes to £1,288 rather than the £1,600 you might have expected. Some employers choose to calculate contributions on total pay instead — worth checking your scheme booklet, since it's more generous than the legal minimum.`,
+      },
+      {
+        q: 'What actually happens to my pay when I agree to salary sacrifice?',
+        a: `You formally agree to a lower contractual salary, and your employer pays the difference straight into your pension instead. Because that slice of pay never appears as your earnings, it isn't charged Income Tax or your 8%/2% employee National Insurance — and your employer avoids their 15% NI on it too. The upshot is that giving up, say, £3,000 a year of salary typically costs you noticeably less than £3,000 in take-home pay, because you're saving tax and NI on every pound sacrificed. The trade-off worth knowing: some lenders and insurers use your reduced contractual salary as your "reference income", which can matter for a mortgage application or income-based benefits like Statutory Maternity Pay.`,
+      },
+      {
+        q: 'Is a "relief at source" pension worse than salary sacrifice?',
+        a: `It works differently rather than being simply worse. With relief at source, you pay into your pension from taxed income, and the pension provider claims back 20% from HMRC automatically — a Higher or Additional rate taxpayer then has to claim the rest of their relief through Self Assessment, which is a step people commonly forget. Crucially, relief at source doesn't touch your National Insurance bill at all, since NI is calculated before the pension contribution happens. Salary sacrifice sidesteps both issues: relief is automatic and immediate, and NI is saved as well as tax. For most employees offered the choice, salary sacrifice comes out ahead — the main reason to prefer relief at source is if a lower contractual salary would cause a problem elsewhere.`,
+      },
+    ],
+  },
+  {
+    group: 'National Insurance',
+    items: [
+      {
+        q: 'National Insurance keeps taking a bigger bite of my payslip — has the rate gone up?',
+        a: `The headline employee rate has actually fallen — it was 12% as recently as 2021/22 and is 8% today. What's changed is the threshold it starts from: the Primary Threshold has been frozen at £12,570 since 2021/22 and, following the November 2025 Budget, will stay there until April 2031. As wages rise against a fixed starting point, a growing share of your pay sits above that line and gets charged NI, even though the rate itself hasn't moved — the same fiscal drag effect that applies to Income Tax.`,
+      },
+      {
+        q: `I'm self-employed — do I still pay Class 2 National Insurance?`,
+        a: `Not directly, in most cases. Since April 2024, Class 2 is no longer collected as a separate payment for people with profits above the Small Profits Threshold (£7,105 for ${TAX_YEAR}) — you're simply treated as having paid it, which keeps your State Pension record intact without an extra bill. If your profits fall below that threshold, you can choose to pay a voluntary weekly rate of £3.65 to avoid a gap in your NI record; for many low-profit years this is one of the cheapest ways to protect a qualifying year towards your pension.`,
+      },
+      {
+        q: 'How does National Insurance work if I run a small business through Self Assessment?',
+        a: `As a sole trader, you pay Class 4 NI on your profits — not on your turnover, and not through PAYE. For ${TAX_YEAR} that's 6% on profits between £12,570 and £50,270, then 2% on anything above. So on £45,000 of profit, you'd pay 6% of £32,430 (profit above £12,570), which comes to £1,945.80, all settled alongside your Income Tax through your Self Assessment return by 31 January. There's no separate employer-style charge to worry about, since you don't have an employer paying the 15% rate on your behalf.`,
+      },
+    ],
+  },
+  {
     group: 'Student Loans & Benefits',
     items: [
       {
@@ -50,6 +84,41 @@ const faqGroups = [
       },
     ],
   },
+  {
+    group: 'Family & Marriage Allowance',
+    items: [
+      {
+        q: 'My partner doesn\'t work — can that lower my tax bill?',
+        a: `Possibly, through Marriage Allowance. If your spouse or civil partner earns under £12,570, they can transfer £1,260 of their unused Personal Allowance to you, provided you're a Basic Rate taxpayer (broadly £12,571–£50,270 for the rest of the UK). That transfer is worth up to £252 a year in reduced Income Tax. It's an all-or-nothing transfer of £1,260 — you can't split it — and you can backdate a claim up to four tax years if you were eligible but never applied, potentially producing a lump sum on top of the ongoing saving. It's not available once the receiving partner becomes a Higher Rate taxpayer.`,
+      },
+      {
+        q: 'What is "adjusted net income" and why does it keep coming up?',
+        a: `It's the figure HMRC actually uses to test several allowances and charges — not your gross salary. Broadly, it's your total taxable income minus things like gross pension contributions and Gift Aid donations (grossed up). This matters because the Personal Allowance taper above £100,000, the High Income Child Benefit Charge above £60,000, and Marriage Allowance eligibility are all judged against adjusted net income rather than headline pay. That's why increasing pension contributions can pull someone back under one of these thresholds even though their salary on paper hasn't changed at all.`,
+      },
+    ],
+  },
+  {
+    group: 'Self-Employment',
+    items: [
+      {
+        q: 'How is tax worked out if I\'m self-employed rather than on a payslip?',
+        a: `There's no PAYE deducting anything automatically — instead, you report your profit (income minus allowable business costs) through Self Assessment, and pay Income Tax and Class 4 NI together by 31 January following the end of the tax year. On, say, £48,000 profit after expenses, the Income Tax works out at roughly £7,086 (20% on income between £12,570 and £48,000), and Class 4 NI adds a further 6% on profit above £12,570 — about £2,126 — bringing total deductions to around £9,212, leaving roughly £38,788. Because nothing is withheld as you go, most self-employed people also make "payments on account" twice a year toward the following year's bill, which catches many first-timers off guard.`,
+      },
+      {
+        q: 'What counts as an allowable business expense?',
+        a: `Broadly, anything spent "wholly and exclusively" for the business — equipment, business travel, professional subscriptions, accountancy fees, and a reasonable share of home costs if you work from home (HMRC allows a simplified flat rate, currently £6 a week, without needing to keep detailed bills). Vehicle costs can be claimed either as actual running costs or via the simplified mileage rate (45p per mile for the first 10,000 business miles, 25p after). Deducting a legitimate expense doesn't just lower your Income Tax — it lowers the profit figure Class 4 NI is calculated on too, so it's worth keeping receipts even for smaller items.`,
+      },
+    ],
+  },
+  {
+    group: 'Advanced Planning',
+    items: [
+      {
+        q: 'A £5,000 raise near £100,000 barely moved my take-home pay — what happened?',
+        a: `You've likely hit the Personal Allowance taper. Above £100,000 of adjusted net income, you lose £1 of your £12,570 allowance for every £2 you earn, on top of paying 40% Income Tax and 2% NI on that income — an effective marginal rate close to 60% inside the £100,000–£125,140 band. A £5,000 rise entirely within that band can leave you with only around £2,000 extra after deductions. Redirecting some or all of that rise into a pension via salary sacrifice brings your adjusted net income back down, restoring the allowance and usually leaving you meaningfully better off between the pension pot and the tax saved combined.`,
+      },
+    ],
+  },
 ];
 
 const keyFigures = [
@@ -60,8 +129,8 @@ const keyFigures = [
 ];
 ---
 <Layout
-  title={`UK Tax FAQs ${TAX_YEAR} — Fiscal Drag, £100k Trap, Student Loans | salary-calc.co.uk`}
-  description={`Clear, sourced answers on UK Income Tax, National Insurance and take-home pay for the ${TAX_YEAR} tax year — fiscal drag, the £100,000 trap, Scottish tax, salary sacrifice, student loans and Child Benefit.`}
+  title={`UK Tax FAQs ${TAX_YEAR} — Income Tax, NI, Pensions & Student Loans | salary-calc.co.uk`}
+  description={`Clear, sourced answers on UK Income Tax, National Insurance, pensions, self-employment, student loans and family benefits for the ${TAX_YEAR} tax year.`}
 >
   <main class="container py-4 pb-5">
     <p class="small text-muted mb-2"><a href={withBase()}>Home</a> &gt; Frequently Asked Questions</p>
