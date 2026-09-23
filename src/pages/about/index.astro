@@ -1,12 +1,10 @@
 ---
-// Content lives in src/content/pages/about.md — edit that file, not this one.
-import { getEntry } from 'astro:content';
-import StaticPage from '../../layouts/StaticPage.astro';
-
-const entry = await getEntry('pages', 'about');
-const { Content, headings } = await entry.render();
-const { title, description, heroLead, image, takeaways } = entry.data;
+import Layout from '../../layouts/Layout.astro';
 ---
-<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
-  <Content />
-</StaticPage>
+<Layout title="About | salary-calc.co.uk" description="About salary-calc.co.uk — a free, independent UK Income Tax calculator.">
+  <main class="container py-4 pb-5">
+    <h1>About salary-calc.co.uk</h1>
+    <p class="lead" style="max-width:65ch;">salary-calc.co.uk is a free, independent tool that helps you estimate your UK Income Tax and National Insurance for the current tax year.</p>
+    <p style="max-width:65ch;">We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk. Our calculations are based on publicly published tax thresholds and rates, and are provided for guidance only. For anything official, always refer to <a href="https://www.gov.uk" target="_blank" rel="noopener">gov.uk</a> or speak to a qualified accountant.</p>
+  </main>
+</Layout>

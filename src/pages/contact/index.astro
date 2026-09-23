@@ -1,12 +1,10 @@
 ---
-// Content lives in src/content/pages/contact.md — edit that file, not this one.
-import { getEntry } from 'astro:content';
-import StaticPage from '../../layouts/StaticPage.astro';
-
-const entry = await getEntry('pages', 'contact');
-const { Content, headings } = await entry.render();
-const { title, description, heroLead, image, takeaways } = entry.data;
+import Layout from '../../layouts/Layout.astro';
 ---
-<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
-  <Content />
-</StaticPage>
+<Layout title="Contact | salary-calc.co.uk" description="Get in touch with salary-calc.co.uk.">
+  <main class="container py-4 pb-5">
+    <h1>Contact us</h1>
+    <p class="lead" style="max-width:65ch;">Spotted an error, or have feedback on the calculator? We'd love to hear from you.</p>
+    <p style="max-width:65ch;">Email: <a href="mailto:hello@salary-calc.co.uk">hello@salary-calc.co.uk</a></p>
+  </main>
+</Layout>
