@@ -105,10 +105,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   .footer-newsletter-btn:hover{ background:#000; }
   .footer-bigtext{
     line-height:1; font-weight:800; letter-spacing:-0.03em;
-    color:#26292b; user-select:none; overflow:hidden;
+    color:var(--govgrey); user-select:none; overflow:hidden;
     white-space:nowrap; text-align:center;
-    font-size:clamp(2rem, 8vw, 7rem);
-    padding:1.5rem 1rem 0;
+    font-size:clamp(1.8rem, 9cqi, 6rem);
+    padding:1.5rem 1rem 1.75rem;
     width:100%;
   }
   @media (max-width:576px){
@@ -161,7 +161,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <div class="footer-card">
 
       <div class="footer-top">
-        <div class="footer-brand">Salary-Calc</div>
+        <div class="footer-brand">salary-calc<span class="dot">.</span>co.uk</div>
         <p class="small text-muted mb-0 mt-1">Independent Income Tax tools and guidance for the UK — not affiliated with HM Revenue &amp; Customs or gov.uk.</p>
       </div>
 
@@ -215,9 +215,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         </div>
       </div>
 
+      <div class="footer-bigtext" aria-hidden="true">salary-calc.co.uk</div>
     </div>
-
-    <div class="footer-bigtext" aria-hidden="true">salary-calc.co.uk</div>
 
     <div class="small text-muted d-flex flex-wrap justify-content-between gap-2 pt-3" style="color:#9aa0a6 !important;">
       <span>&copy; {new Date().getFullYear()} salary-calc.co.uk</span>
