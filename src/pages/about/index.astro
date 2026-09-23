@@ -1,10 +1,233 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../lib/url.js';
+
+const title = 'About salary-calc.co.uk';
+const description = 'salary-calc.co.uk is a free, independent UK take-home pay calculator built on confirmed 2026/27 HMRC rates and thresholds.';
+
+const toc = [
+  { slug: 'what-we-do', text: 'What we do' },
+  { slug: 'the-numbers-behind-the-calculator', text: 'The numbers behind the calculator' },
+  { slug: 'why-we-built-it', text: 'Why we built it' },
+  { slug: 'how-the-calculator-works', text: 'How the calculator works' },
+  { slug: 'accuracy', text: 'Accuracy' },
+  { slug: 'privacy', text: 'Privacy' },
+  { slug: 'not-financial-advice', text: 'Not financial advice' },
+  { slug: 'sources', text: 'Sources' },
+];
+
+const takeaways = [
+  'Free UK take-home pay calculator for the 2026/27 tax year (6 April 2026 – 5 April 2027).',
+  'Covers England, Wales, Northern Ireland and Scotland, including all six Scottish tax bands.',
+  'Every rate and threshold is taken directly from HMRC and GOV.UK — nothing is estimated.',
+  'Runs entirely in your browser — the salary you enter is never sent to our servers.',
+];
 ---
-<Layout title="About | salary-calc.co.uk" description="About salary-calc.co.uk — a free, independent UK Income Tax calculator.">
-  <main class="container py-4 pb-5">
-    <h1>About salary-calc.co.uk</h1>
-    <p class="lead" style="max-width:65ch;">salary-calc.co.uk is a free, independent tool that helps you estimate your UK Income Tax and National Insurance for the current tax year.</p>
-    <p style="max-width:65ch;">We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk. Our calculations are based on publicly published tax thresholds and rates, and are provided for guidance only. For anything official, always refer to <a href="https://www.gov.uk" target="_blank" rel="noopener">gov.uk</a> or speak to a qualified accountant.</p>
+<Layout title={`${title} | salary-calc.co.uk`} description={description}>
+  <div class="post-hero">
+    <div class="container py-4 h-100 post-hero-inner">
+      <p class="post-hero-breadcrumb small mb-3">
+        <a href={withBase()}>Home</a> / About
+      </p>
+
+      <h1 class="post-hero-title mt-2">{title}</h1>
+      <p class="post-hero-lead mb-4">{description}</p>
+
+      <div class="d-flex align-items-center gap-2">
+        <span class="post-hero-byline small">Last reviewed: 26 November 2025 Autumn Budget figures</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="container py-5" style="max-width:1200px;">
+    <div class="row g-4">
+      <div class="col-12 col-lg-3 order-2 order-lg-1">
+        <nav class="post-sidebar-box post-toc-box mb-4" aria-label="Table of contents">
+          <h2 class="post-sidebar-label mb-3">Table of Contents</h2>
+          <ol class="ps-3 small mb-0 post-toc">
+            {toc.map((h) => (
+              <li class="mb-2"><a href={`#${h.slug}`}>{h.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      </div>
+
+      <div class="col-12 col-lg-6 order-1 order-lg-2">
+        <div class="key-takeaways-box mb-4">
+          <h2 class="key-takeaways-title mb-3">Key Takeaways</h2>
+          <ul class="mb-0">
+            {takeaways.map((t) => (
+              <li class="mb-2">{t}</li>
+            ))}
+          </ul>
+        </div>
+
+        <article class="blog-article">
+          <h2 id="what-we-do">What we do</h2>
+          <p>salary-calc.co.uk is a free UK take-home pay calculator for the <strong>2026/27 tax year</strong> (6 April 2026 – 5 April 2027). It works out what you actually keep after Income Tax, National Insurance, pension contributions and student loan repayments — covering England, Wales, Northern Ireland and Scotland. No sign-up, no email capture, just a number you can trust.</p>
+
+          <h2 id="the-numbers-behind-the-calculator">The numbers behind the calculator</h2>
+          <p>Every calculation is built from the confirmed 2026/27 rates and thresholds:</p>
+          <table>
+            <thead>
+              <tr><th>Threshold / Rate</th><th>2026/27 figure</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Personal Allowance</td><td>£12,570 (frozen until April 2031)</td></tr>
+              <tr><td>Basic Rate</td><td>20% on £12,570–£50,270</td></tr>
+              <tr><td>Higher Rate</td><td>40% on £50,271–£125,140</td></tr>
+              <tr><td>Additional Rate</td><td>45% above £125,140</td></tr>
+              <tr><td>Personal Allowance taper</td><td>Reduced £1 per £2 earned over £100,000, gone by £125,140</td></tr>
+              <tr><td>Employee National Insurance</td><td>8% on £12,570–£50,270, then 2% above</td></tr>
+              <tr><td>Employer National Insurance</td><td>15% above £5,000, no upper limit</td></tr>
+              <tr><td>Scottish Income Tax</td><td>Separate six-band structure, 19%–48%</td></tr>
+              <tr><td>Student Loan Plans</td><td>1, 2, 4, 5 and Postgraduate</td></tr>
+            </tbody>
+          </table>
+          <p>Following the Autumn Budget on 26 November 2025, the Personal Allowance, higher-rate threshold and main National Insurance thresholds are now frozen until April 2031, rather than ending in 2027/28. Because these thresholds have been fixed since 2021/22, more income is pulled into higher bands each year as wages rise — this is often called fiscal drag, and it's a big part of why take-home pay feels harder to predict than it used to.</p>
+          <p>The taper between £100,000 and £125,140 is worth flagging on its own: losing £1 of Personal Allowance for every £2 earned, on top of 40% Higher Rate tax and 2% National Insurance, produces a marginal rate of around 60% — often called the "60% tax trap." It affects roughly 1.2 million people in that income band, and our calculator shows it explicitly rather than just labelling it "Higher Rate."</p>
+
+          <h2 id="why-we-built-it">Why we built it</h2>
+          <p>Most salary calculators are black boxes — you put in a number, a result appears, and there's no way to check the working. We wanted something different: a calculator where every rate and threshold traces back to an official HMRC source, and where the logic behind the number is written down in plain English rather than buried in a spreadsheet.</p>
+
+          <h2 id="how-the-calculator-works">How the calculator works</h2>
+          <p>The engine follows HMRC's published order of operations for PAYE — gross pay, pension contributions (salary sacrifice or relief at source), Personal Allowance, Income Tax, National Insurance, then student loan repayments. It supports:</p>
+          <ul>
+            <li>Income Tax across all UK regions, including the full set of Scottish bands</li>
+            <li>Employee and Employer National Insurance</li>
+            <li>Student Loan Plans 1, 2, 4, 5 and Postgraduate</li>
+            <li>Both salary sacrifice and relief-at-source pensions</li>
+            <li>Breakdown by hour, day, week, month and year</li>
+          </ul>
+          <p>We update the site whenever HMRC publishes new figures — typically at the Spring or Autumn Budget, effective from the following 6 April — and note the date each page was last reviewed.</p>
+
+          <h2 id="accuracy">Accuracy</h2>
+          <p>We test the calculator against real payroll scenarios, including the edge cases that trip up simpler tools: the Personal Allowance taper between £100,000 and £125,140, the Scottish Intermediate Rate boundary, and interactions between student loan deductions and other thresholds.</p>
+
+          <h2 id="privacy">Privacy</h2>
+          <p>The calculator runs entirely in your browser. The salary figures you enter aren't sent to our servers or stored anywhere.</p>
+
+          <h2 id="not-financial-advice">Not financial advice</h2>
+          <p>salary-calc.co.uk is an informational tool. It's built to be accurate, but it isn't a substitute for advice from a qualified accountant or tax adviser, particularly if your situation involves self-employment, multiple income sources, or benefits in kind. We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk.</p>
+
+          <h2 id="sources">Sources</h2>
+          <ul>
+            <li><a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">GOV.UK — Income Tax rates and Personal Allowances</a></li>
+            <li><a href="https://www.gov.uk/national-insurance/how-much-you-pay" target="_blank" rel="noopener">GOV.UK — National Insurance rates</a></li>
+            <li><a href="https://www.gov.uk/scottish-income-tax" target="_blank" rel="noopener">GOV.UK — Scottish Income Tax</a></li>
+            <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-10618/" target="_blank" rel="noopener">House of Commons Library — Direct taxes: rates and allowances 2026/27</a></li>
+          </ul>
+        </article>
+
+        <footer class="post-footer mt-5 pt-4">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="post-footer-label">Get in touch:</span>
+            <a href={withBase('contact/')} class="tag-pill text-decoration-none">Contact us</a>
+          </div>
+        </footer>
+      </div>
+
+      <div class="col-12 col-lg-3 order-3">
+        <div class="post-sidebar-box mb-4">
+          <h2 class="post-sidebar-label mb-3">Quick Facts</h2>
+          <ul class="ps-3 small mb-0">
+            <li class="mb-2">Tax year: 2026/27</li>
+            <li class="mb-2">Personal Allowance: £12,570</li>
+            <li class="mb-2">Frozen until: April 2031</li>
+            <li class="mb-0">Regions: England, Wales, NI, Scotland</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <style>
+    .post-hero{
+      position: relative;
+      background: linear-gradient(135deg, var(--govblue), #123a5c);
+      overflow: hidden;
+    }
+    .post-hero-inner{ position: relative; z-index: 2; max-width: 900px; }
+    .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
+    .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
+    .post-hero-title{ color:#fff; font-size:2.2rem; margin-bottom:0.5rem; }
+    .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
+    .post-hero-byline{ color:rgba(255,255,255,0.85); line-height:1.5; }
+
+    .key-takeaways-box{
+      background: rgba(29,112,184,0.07);
+      border-radius:10px !important;
+      padding:1.5rem 1.75rem;
+    }
+    .key-takeaways-title{ color:var(--govblue); font-size:1.1rem; font-weight:700; }
+    .key-takeaways-box ul{ padding-left:1.1rem; }
+    .key-takeaways-box li{ line-height:1.5; }
+
+    .blog-article :global(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .blog-article :global(p) { margin-bottom: 1rem; }
+    .blog-article :global(ul) { margin-bottom: 1rem; padding-left: 1.5rem; }
+    .blog-article :global(li) { margin-bottom: 0.35rem; }
+    .blog-article :global(a) { color: var(--govblue); text-decoration: underline; }
+    .blog-article :global(strong) { font-weight: 700; }
+
+    .blog-article :global(table) {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .blog-article :global(th),
+    .blog-article :global(td) {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--govborder);
+      text-align: left;
+    }
+    .blog-article :global(thead th) {
+      border-bottom: 2px solid var(--govblack);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .blog-article :global(tbody tr:nth-child(even)) { background: var(--govgrey); }
+
+    .post-footer{ border-top: 1px solid var(--govborder); }
+    .post-footer-label{
+      font-size:0.75rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+      color:#505a5f;
+      margin-right:0.25rem;
+    }
+    .tag-pill{
+      display:inline-block;
+      background:var(--govgrey);
+      border:1px solid var(--govborder);
+      color:var(--govblack) !important;
+      font-size:0.75rem;
+      padding:0.25rem 0.6rem;
+      border-radius:999px !important;
+    }
+    .tag-pill:hover{ background:var(--govblack); color:#fff !important; }
+
+    .post-sidebar-box{
+      background: rgba(0,112,60,0.05);
+      border-radius:10px !important;
+      padding:1.25rem 1.4rem;
+    }
+    .post-sidebar-label{
+      font-size:0.72rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+      color:#505a5f;
+      margin:0;
+    }
+    .post-toc{ counter-reset:toc; }
+    .post-toc li a{ color:var(--govblack); text-decoration:none; line-height:1.4; }
+    .post-toc li a:hover{ color:var(--govblue); text-decoration:underline; }
+
+    @media (min-width: 992px){
+      .post-toc-box{ position:sticky; top:1rem; }
+    }
+  </style>
 </Layout>
