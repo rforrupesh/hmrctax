@@ -155,7 +155,7 @@ const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
     background: linear-gradient(135deg, var(--govblue), #123a5c);
     overflow: hidden;
   }
-  .post-hero-inner{ position: relative; z-index: 2; max-width: 900px; }
+  .post-hero-inner{ position: relative; z-index: 2; max-width: 900px; margin-left: 0 !important; padding-left: clamp(1rem, 5vw, 3rem) !important; }
   .post-hero-inner.has-thumb{ padding-right: 44%; }
   .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
   .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
