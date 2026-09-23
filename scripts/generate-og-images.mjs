@@ -8,7 +8,7 @@
 import { createCanvas } from '@napi-rs/canvas';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import path from 'path';
-import { getSalaryList, calculateTax, fmt } from '../src/lib/tax.js';
+import { getSalaryList, calculateTax, fmt, TAX_YEAR } from '../src/lib/tax.js';
 
 const salaries = getSalaryList();
 
@@ -68,7 +68,7 @@ function drawImage(salary) {
   ctx.fillStyle = '#ffffff';
   ctx.font = '26px sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText('2025/26 tax year', W - pad, H - 32);
+  ctx.fillText(`${TAX_YEAR} tax year`, W - pad, H - 32);
   ctx.textAlign = 'left';
 
   return canvas;
