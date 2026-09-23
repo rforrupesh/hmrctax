@@ -1,5 +1,21 @@
-// Shared UK Income Tax + NI calculation logic — 2025/26 tax year
+// Shared UK Income Tax + NI calculation logic
 // Used by both the interactive calculator and the static salary pages.
+
+// The UK tax year runs 6 April – 5 April. This auto-computes the current
+// tax year label ("2026/27") from today's date, so titles/descriptions/FAQ
+// copy never go stale — no manual find-and-replace needed each April.
+// NOTE: this only keeps the *label* current. If HMRC changes the actual
+// rates/thresholds/bands in a Budget, those numbers below still need a
+// manual update — this doesn't invent new tax rules on its own.
+export function getTaxYear(date = new Date()) {
+  const y = date.getFullYear();
+  const isBeforeApril6 = date.getMonth() < 3 || (date.getMonth() === 3 && date.getDate() < 6);
+  const startYear = isBeforeApril6 ? y - 1 : y;
+  const endYear = startYear + 1;
+  return `${startYear}/${String(endYear).slice(-2)}`;
+}
+
+export const TAX_YEAR = getTaxYear();
 
 export function calcIncomeTax(taxable, scottish = false) {
   let bands;

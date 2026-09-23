@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { withBase } from '../../lib/url.js';
 import { BUILD_ID } from '../../lib/build-id.js';
-import { calculateTax, fmt, getSalaryList } from '../../lib/tax.js';
+import { calculateTax, fmt, getSalaryList, TAX_YEAR } from '../../lib/tax.js';
 
 export async function getStaticPaths() {
   const salaries = getSalaryList();
@@ -36,8 +36,8 @@ const allSalaries = getSalaryList();
 const idx = allSalaries.indexOf(amount);
 const related = [allSalaries[idx - 2], allSalaries[idx - 1], allSalaries[idx + 1], allSalaries[idx + 2]].filter(Boolean);
 
-const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay 2025/26 | salary-calc.co.uk`;
-const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the 2025/26 UK tax year — broken down yearly, monthly and weekly.`;
+const pageTitle = `${fmt(amount)} After Tax UK — Take-Home Pay ${TAX_YEAR} | salary-calc.co.uk`;
+const pageDesc = `If your annual salary is ${fmt(amount)}, find out your take-home pay after Income Tax and National Insurance for the ${TAX_YEAR} UK tax year — broken down yearly, monthly and weekly.`;
 const ogImage = withBase(`og/${amount}-annually.png?v=${BUILD_ID}`);
 
 // Build a static donut chart (same design as the homepage calculator) —
@@ -59,7 +59,7 @@ const donutData = donutSegments.map((s) => {
 const takeHomePct = amount > 0 ? Math.round((result.net / amount) * 100) : 0;
 
 // FAQ variables
-const taxYear = '2025/26';
+const taxYear = TAX_YEAR;
 const totalDeductions = result.tax + result.ni;
 const totalDeductionPct = amount > 0 ? Math.round((totalDeductions / amount) * 100) : 0;
 const incomeTaxRatePct = result.taxRows.length ? Math.round(result.taxRows[result.taxRows.length - 1].rate * 100) : 0;
@@ -76,7 +76,7 @@ const faqs = [
   },
   {
     q: `What National Insurance rate applies to ${kLabel}?`,
-    a: `For a standard employee, the relevant Class 1 National Insurance rate is ${niRatePct}% on earnings within the applicable band. Earnings above the Upper Earnings Limit are generally charged at 2% for 2026/27.`,
+    a: `For a standard employee, the relevant Class 1 National Insurance rate is ${niRatePct}% on earnings within the applicable band. Earnings above the Upper Earnings Limit are generally charged at 2% for ${TAX_YEAR}.`,
   },
   {
     q: `How much of my ${fmt(amount)} salary goes to tax and National Insurance?`,
@@ -115,9 +115,9 @@ const bandRows = [
       </div>
       <h1 class="mb-0">Tax Calculator for {kLabel}</h1>
     </div>
-    <p class="lead" style="max-width:65ch;">This calculator estimates the Income Tax and National Insurance deducted from a <strong>{fmt(amount)}</strong> salary each week, month and year, for the 2025/26 UK tax year.</p>
+    <p class="lead" style="max-width:65ch;">This calculator estimates the Income Tax and National Insurance deducted from a <strong>{fmt(amount)}</strong> salary each week, month and year, for the {TAX_YEAR} UK tax year.</p>
 
-    <h2 class="h6 fw-bold text-uppercase mt-4" style="color:#505a5f; letter-spacing:0.03em;">Your estimation — Tax year 2025/26</h2>
+    <h2 class="h6 fw-bold text-uppercase mt-4" style="color:#505a5f; letter-spacing:0.03em;">Your estimation — Tax year {TAX_YEAR}</h2>
 
     <div class="result-panel p-4 mt-2 mb-4">
       <div class="small result-panel-label">Estimated take-home pay per year</div>

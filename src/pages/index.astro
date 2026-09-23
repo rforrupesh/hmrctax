@@ -1,14 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Calculator from '../components/Calculator.astro';
+import { TAX_YEAR } from '../lib/tax.js';
 ---
 <Layout
-  title="UK Income Tax Calculator 2025/26 | salary-calc.co.uk"
-  description="Free UK Income Tax calculator. Find your take-home pay after Income Tax and National Insurance for the 2025/26 tax year — yearly, monthly or weekly."
+  title={`UK Salary & Take-Home Pay Calculator ${TAX_YEAR} | Salary-Calc.co.uk`}
+  description={`Free UK Income Tax calculator. Find your take-home pay after Income Tax and National Insurance for the ${TAX_YEAR} tax year — yearly, monthly or weekly.`}
 >
   <main class="container py-4 pb-5">
     <h1>Estimate your Income Tax for the current year</h1>
-    <p class="lead" style="max-width:60ch;">This calculator gives an estimate of the Income Tax and National Insurance you'll pay in the 2025 to 2026 tax year, based on the salary and options you enter below.</p>
+    <p class="lead" style="max-width:60ch;">This calculator gives an estimate of the Income Tax and National Insurance you'll pay in the {TAX_YEAR} tax year, based on the salary and options you enter below.</p>
     <div class="mt-4">
       <Calculator prefill={45000} />
     </div>
