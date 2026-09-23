@@ -1,0 +1,120 @@
+---
+// Shared layout for static informational pages (About, Contact, Terms,
+// Privacy Policy, etc). Reuses the same hero-banner + TOC-sidebar UI as
+// BlogPost.astro, minus the blog-only bits (updated date, related posts,
+// author/category/tags footer) which don't apply to a static page.
+import Layout from './Layout.astro';
+import { withBase } from '../lib/url.js';
+
+interface TocItem { slug: string; text: string }
+
+interface Props {
+  title: string;
+  description: string;
+  heroLead?: string;
+  toc?: TocItem[];
+}
+
+const { title, description, heroLead, toc = [] } = Astro.props;
+---
+<Layout title={`${title} | salary-calc.co.uk`} description={description}>
+  <div class="post-hero">
+    <div class="container py-4 h-100 post-hero-inner">
+      <p class="post-hero-breadcrumb small mb-3">
+        <a href={withBase()}>Home</a> / {title}
+      </p>
+      <h1 class="post-hero-title mt-2">{title}</h1>
+      {heroLead && <p class="post-hero-lead mb-0">{heroLead}</p>}
+    </div>
+  </div>
+
+  <main class="container py-5" style="max-width:1200px;">
+    <div class="row g-4">
+      {toc.length > 0 && (
+        <div class="col-12 col-lg-3 order-2 order-lg-1">
+          <nav class="post-sidebar-box post-toc-box mb-4" aria-label="Table of contents">
+            <h2 class="post-sidebar-label mb-3">Table of Contents</h2>
+            <ol class="ps-3 small mb-0 post-toc">
+              {toc.map((h) => (
+                <li class="mb-2"><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        </div>
+      )}
+
+      <div class={`col-12 order-1 order-lg-2 ${toc.length > 0 ? 'col-lg-9' : ''}`} style={toc.length === 0 ? 'max-width:900px;' : ''}>
+        <article class="blog-article">
+          <slot />
+        </article>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .post-hero{
+    position: relative;
+    background: linear-gradient(135deg, var(--govblue), #123a5c);
+    overflow: hidden;
+  }
+  .post-hero-inner{ position: relative; z-index: 2; max-width: 900px; }
+  .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
+  .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
+  .post-hero-title{ color:#fff; font-size:2.2rem; margin-bottom:0.5rem; }
+  .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
+
+  .blog-article :global(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; }
+  .blog-article :global(h3) { font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  .blog-article :global(p) { margin-bottom: 1rem; max-width: 70ch; }
+  .blog-article :global(ul), .blog-article :global(ol) { margin-bottom: 1rem; padding-left: 1.5rem; }
+  .blog-article :global(li) { margin-bottom: 0.35rem; }
+  .blog-article :global(a) { color: var(--govblue); text-decoration: underline; }
+  .blog-article :global(strong) { font-weight: 700; }
+
+  .blog-article :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+  }
+  .blog-article :global(th),
+  .blog-article :global(td) {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--govborder);
+    text-align: left;
+  }
+  .blog-article :global(thead th) {
+    border-bottom: 2px solid var(--govblack);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .blog-article :global(tbody tr:nth-child(even)) { background: var(--govgrey); }
+
+  .key-takeaways-box{
+    background: rgba(29,112,184,0.07);
+    border-radius:10px !important;
+    padding:1.5rem 1.75rem;
+  }
+  .key-takeaways-title{ color:var(--govblue); font-size:1.1rem; font-weight:700; }
+
+  .post-sidebar-box{
+    background: rgba(0,112,60,0.05);
+    border-radius:10px !important;
+    padding:1.25rem 1.4rem;
+  }
+  .post-sidebar-label{
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:#505a5f;
+    margin:0;
+  }
+  .post-toc li a{ color:var(--govblack); text-decoration:none; line-height:1.4; }
+  .post-toc li a:hover{ color:var(--govblue); text-decoration:underline; }
+
+  @media (min-width: 992px){
+    .post-toc-box{ position:sticky; top:1rem; }
+  }
+</style>

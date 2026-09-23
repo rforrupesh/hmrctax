@@ -1,10 +1,12 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import StaticPage from '../../layouts/StaticPage.astro';
 ---
-<Layout title="Terms & Conditions | salary-calc.co.uk" description="Terms and conditions for using salary-calc.co.uk.">
-  <main class="container py-4 pb-5">
-    <h1>Terms &amp; Conditions</h1>
-    <p style="max-width:65ch;">salary-calc.co.uk provides estimates only, based on publicly available UK tax thresholds and rates. We make no guarantee of accuracy and accept no liability for decisions made based on figures shown on this site.</p>
-    <p style="max-width:65ch;">This is not tax advice. For advice specific to your circumstances, consult a qualified accountant or refer to official guidance at <a href="https://www.gov.uk" target="_blank" rel="noopener">gov.uk</a>.</p>
-  </main>
-</Layout>
+<StaticPage
+  title="Terms & Conditions"
+  description="Terms and conditions for using salary-calc.co.uk."
+  heroLead="Please read these terms before using the calculator or any other part of this site."
+>
+  <p>salary-calc.co.uk provides estimates only, based on publicly available UK tax thresholds and rates for the 2026/27 tax year. We make no guarantee of accuracy and accept no liability for decisions made based on figures shown on this site.</p>
+  <p>This is not tax advice. For advice specific to your circumstances, consult a qualified accountant or refer to official guidance at <a href="https://www.gov.uk" target="_blank" rel="noopener">gov.uk</a>.</p>
+  <p>We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk.</p>
+</StaticPage>

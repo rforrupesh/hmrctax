@@ -1,10 +1,12 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import StaticPage from '../../layouts/StaticPage.astro';
 ---
-<Layout title="Contact | salary-calc.co.uk" description="Get in touch with salary-calc.co.uk.">
-  <main class="container py-4 pb-5">
-    <h1>Contact us</h1>
-    <p class="lead" style="max-width:65ch;">Spotted an error, or have feedback on the calculator? We'd love to hear from you.</p>
-    <p style="max-width:65ch;">Email: <a href="mailto:hello@salary-calc.co.uk">hello@salary-calc.co.uk</a></p>
-  </main>
-</Layout>
+<StaticPage
+  title="Contact us"
+  description="Get in touch with salary-calc.co.uk."
+  heroLead="Spotted an error, or have feedback on the calculator? We'd love to hear from you."
+>
+  <p>The fastest way to reach us is by email:</p>
+  <p><strong>Email:</strong> <a href="mailto:hello@salary-calc.co.uk">hello@salary-calc.co.uk</a></p>
+  <p>If you're reporting a figure that doesn't match HMRC's published rates, please tell us the salary, tax year and region you used — it helps us check and fix it faster.</p>
+</StaticPage>
