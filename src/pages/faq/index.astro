@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../lib/url.js';
+import { TAX_YEAR } from '../../lib/tax.js';
+
+const faqGroups = [
+  {
+    group: 'Tax & Thresholds',
+    items: [
+      {
+        q: 'How does "Fiscal Drag" affect my pay rise?',
+        a: `The Personal Allowance (£12,570) and the Higher Rate threshold (£50,270) have been frozen since 2021/22. At the November 2025 Budget, the government extended this freeze for a further three years, so both figures now stay fixed until April 2031. Wages, however, keep rising with inflation. As your salary grows against a threshold that doesn't move, more of your income gets pulled into tax, or into a higher tax band, than it would if the threshold rose in line with earnings. This effect is known as fiscal drag: it raises the government's tax take without any change to the headline rates, and it's the main reason a "same as inflation" pay rise can still mean a bigger tax bill.`,
+      },
+      {
+        q: 'If I earn just over £100,000, why does my net pay drop so significantly?',
+        a: `Once your "adjusted net income" goes above £100,000, your £12,570 Personal Allowance is withdrawn at a rate of £1 for every £2 you earn above that point. It disappears completely once you reach £125,140. Inside this £100,000–£125,140 band you're paying 40% Income Tax on your normal earnings and effectively losing tax-free allowance on top, which pushes the marginal rate on that slice of income to around 60%. That's why an extra £1,000 of salary in this band can leave you with only around £400 in your pocket. Many people in this range reduce their "adjusted net income" back below £100,000 with pension contributions or Gift Aid to avoid the taper altogether.`,
+      },
+      {
+        q: 'Why is the Scottish tax system increasingly different from the rest of the UK?',
+        a: `Scotland has had the power to set its own Income Tax rates and bands since 2017, and it now uses six bands against three for England, Wales and Northern Ireland. For ${TAX_YEAR}, Scotland charges Starter (19%), Basic (20%), Intermediate (21%), Higher (42%), Advanced (45%) and Top (48%) rates. The Scottish Basic and Intermediate thresholds were increased by 7.4% for ${TAX_YEAR} — well above inflation — while the Higher, Advanced and Top thresholds stay frozen. The Advanced rate band was also widened so 45% now applies all the way up to £125,140, matching where the rest-of-UK Additional rate starts. National Insurance is unaffected — it's set UK-wide and is identical whether you live in Glasgow or Guildford.`,
+      },
+      {
+        q: 'After the increase in employer NI contributions, is Salary Sacrifice still worth it?',
+        a: `Yes, for most people it's worth even more now. Employer National Insurance rose from 13.8% to 15%, and the threshold at which employers start paying it was cut from £9,100 to £5,000, both from April 2025 and unchanged for ${TAX_YEAR}. Under salary sacrifice, you give up salary in exchange for a benefit (usually a pension contribution), so that salary never counts as earnings for either your Income Tax or your 8%/2% employee National Insurance, or for your employer's 15% National Insurance. Because the employer NI rate is now higher, the potential saving on every pound sacrificed is larger than it was before 2025, which is why many employers pass some of that extra saving back to staff as a boosted pension contribution.`,
+      },
+      {
+        q: 'Will my bonus be taxed at a flat rate?',
+        a: `No — this is one of the most common payroll myths. A bonus isn't taxed at a special flat rate; it's simply added to your normal pay for that period and taxed through PAYE like any other earnings. Because PAYE assumes your monthly pay is representative of the whole year, a large one-off bonus can temporarily push that month's pay into a higher tax band, making the deduction look disproportionately large on the payslip. Over the full tax year, HMRC's cumulative PAYE system corrects for this automatically: if you were over-taxed in the bonus month, you get it back through lower deductions later in the year (or as a refund if the year has already ended).`,
+      },
+      {
+        q: 'Why is my net pay different from a colleague on the same salary?',
+        a: `Even on an identical gross salary, several things can change take-home pay: your tax code (affected by benefits in kind, a second job, or an underpayment being collected), whether you're a Scottish or rest-of-UK taxpayer, whether you have a student loan and which plan it's on, how much (and how) you pay into a pension — salary sacrifice reduces taxable pay in a way that a "net pay" or "relief at source" scheme doesn't — and any salary sacrifice benefits like a cycle-to-work scheme or electric car. Two people on the same headline salary can have meaningfully different take-home pay for entirely legitimate reasons.`,
+      },
+    ],
+  },
+  {
+    group: 'Student Loans & Benefits',
+    items: [
+      {
+        q: `What are the Student Loan thresholds for ${TAX_YEAR}?`,
+        a: `For ${TAX_YEAR}, the annual repayment thresholds are: Plan 1 — £26,900; Plan 2 — £29,385; Plan 4 (Scotland) — £33,795; Plan 5 — £25,000; and the Postgraduate Loan — £21,000 (unchanged since it was introduced). You repay 9% of income above your threshold (6% for a Postgraduate Loan, or 15% combined if you hold both an undergraduate plan and a Postgraduate Loan). The Plan 2 threshold rose to £29,385 this year but is then due to be frozen at that level from April 2027 to April 2030, so it won't track inflation during that period.`,
+      },
+      {
+        q: 'What about the Child Benefit reforms of April 2026?',
+        a: `A move to a household-income test for the High Income Child Benefit Charge (HICBC) was proposed back in 2024 for an April 2026 start, but the government confirmed at the Autumn 2024 Budget that this reform will not go ahead. The charge still works the same way it has since 6 April 2024: it applies based on the higher earner's individual "adjusted net income", starting at £60,000 and increasing by 1% of the Child Benefit for every £200 of income above that, until it's fully clawed back at £80,000. In other words, a two-earner household on £59,000 each can still keep full Child Benefit, while a single earner on £80,000+ loses all of it — that mismatch remains, unchanged, into ${TAX_YEAR}.`,
+      },
+      {
+        q: 'Why does a small pay rise sometimes make me worse off?',
+        a: `This usually isn't about Income Tax bands directly — it's about "cliff edges" elsewhere in the system that a small pay rise can trigger. The clearest example is Child Benefit: crossing £60,000 of adjusted net income starts the HICBC clawback, and going from, say, £79,500 to £80,500 can wipe out the rest of your Child Benefit in one go. Similarly, crossing £100,000 starts tapering away your Personal Allowance, and for parents, £100,000 is also the cut-off for free childcare hours and Tax-Free Childcare, both lost entirely rather than gradually. In each case, a modest rise in gross pay can trigger the loss of an allowance or benefit worth far more than the rise itself, leaving you worse off overall.`,
+      },
+    ],
+  },
+];
+
+const keyFigures = [
+  { label: 'Personal Allowance', value: '£12,570' },
+  { label: 'Basic Rate', value: '20%' },
+  { label: 'Higher Rate Threshold', value: '£50,270' },
+  { label: 'Higher Rate', value: '40%' },
+];
+---
+<Layout
+  title={`UK Tax FAQs ${TAX_YEAR} — Fiscal Drag, £100k Trap, Student Loans | salary-calc.co.uk`}
+  description={`Clear, sourced answers on UK Income Tax, National Insurance and take-home pay for the ${TAX_YEAR} tax year — fiscal drag, the £100,000 trap, Scottish tax, salary sacrifice, student loans and Child Benefit.`}
+>
+  <main class="container py-4 pb-5">
+    <p class="small text-muted mb-2"><a href={withBase()}>Home</a> &gt; Frequently Asked Questions</p>
+    <h1>Frequently Asked Questions</h1>
+    <p class="lead" style="max-width:65ch;">Clear answers on UK tax, National Insurance, and take-home pay for the {TAX_YEAR} tax year.</p>
+
+    <h2 class="h6 fw-bold text-uppercase mt-4 mb-3" style="color:#505a5f; letter-spacing:0.03em;">Key {TAX_YEAR.slice(0, 4)} tax figures (UK)</h2>
+    <div class="row g-3 mb-5">
+      {keyFigures.map((f) => (
+        <div class="col-6 col-md-3">
+          <div class="stat-box h-100">
+            <div class="small text-muted">{f.label}</div>
+            <div class="fw-bold" style="font-size:1.5rem;">{f.value}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {faqGroups.map((section) => (
+      <section class="mb-5">
+        <h2 class="h4 fw-bold mb-3" style="color:var(--govblack);">{section.group}</h2>
+        {section.items.map((item) => (
+          <details class="mb-3 pb-3" style="border-bottom:1px solid var(--govborder);">
+            <summary class="h6 mb-0">{item.q}</summary>
+            <p class="mt-2 mb-0" style="max-width:70ch;">{item.a}</p>
+          </details>
+        ))}
+      </section>
+    ))}
+
+    <div class="zero-note">
+      <p class="small mb-1"><strong>Sources:</strong> <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">HMRC Income Tax rates</a>, <a href="https://www.gov.uk/scottish-income-tax" target="_blank" rel="noopener">GOV.UK Scottish Income Tax</a>, <a href="https://www.gov.uk/repaying-your-student-loan/what-you-pay" target="_blank" rel="noopener">GOV.UK Student Loans</a>, and House of Commons Library research briefings on the High Income Child Benefit Charge and employer National Insurance.</p>
+      <p class="small mb-0">This page is for general guidance only and does not constitute financial or tax advice. Figures are correct for the {TAX_YEAR} tax year as published by HMRC and the Scottish Government; always check <a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">gov.uk</a> for the latest position before making decisions.</p>
+    </div>
+  </main>
+</Layout>

@@ -99,6 +99,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase()} style="color:var(--govblack);">Home</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-calculator/`)} style="color:var(--govblack);">By Salary</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-guides/`)} style="color:var(--govblack);">Guides</a></li>
+      <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`faq/`)} style="color:var(--govblack);">FAQ</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`about/`)} style="color:var(--govblack);">About</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`contact/`)} style="color:var(--govblack);">Contact</a></li>
     </ul>
@@ -121,6 +122,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <h2 class="h6 fw-bold" style="color:var(--govblack);">Tax Guides</h2>
         <ul class="list-unstyled small">
           <li class="mb-2"><a href={withBase(`tax-guides/`)}>All guides</a></li>
+          <li class="mb-2"><a href={withBase(`faq/`)}>FAQ</a></li>
         </ul>
       </div>
       <div class="col-6 col-md-3">
