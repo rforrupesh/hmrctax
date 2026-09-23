@@ -1,0 +1,21 @@
+---
+// Auto-generates a route for every .md file in src/content/pages/
+// Add a new page? Just add a new .md file there — nothing to touch here.
+import { getCollection, getEntry } from 'astro:content';
+import StaticPage from '../layouts/StaticPage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pages');
+  return entries.map((entry) => ({
+    params: { page: entry.slug },
+  }));
+}
+
+const { page } = Astro.params;
+const entry = await getEntry('pages', page);
+const { Content, headings } = await entry.render();
+const { title, description, heroLead, image, takeaways } = entry.data;
+---
+<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
+  <Content />
+</StaticPage>
