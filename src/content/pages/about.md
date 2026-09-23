@@ -2,6 +2,7 @@
 title: "About salary-calc.co.uk"
 description: "salary-calc.co.uk is a free, independent UK take-home pay calculator built on confirmed 2026/27 HMRC rates and thresholds."
 heroLead: "salary-calc.co.uk is a free, independent UK take-home pay calculator built on confirmed 2026/27 HMRC rates and thresholds."
+image: "https://cdn.pixabay.com/photo/2017/03/27/12/11/boy-2178303_1280.jpg"
 takeaways:
   - "Free UK take-home pay calculator for the 2026/27 tax year (6 April 2026 – 5 April 2027)."
   - "Covers England, Wales, Northern Ireland and Scotland, including all six Scottish tax bands."
