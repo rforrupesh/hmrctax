@@ -1,85 +1,12 @@
 ---
+// Content lives in src/content/pages/about.md — edit that file, not this one.
+import { getEntry } from 'astro:content';
 import StaticPage from '../../layouts/StaticPage.astro';
 
-const toc = [
-  { slug: 'what-we-do', text: 'What we do' },
-  { slug: 'the-numbers-behind-the-calculator', text: 'The numbers behind the calculator' },
-  { slug: 'why-we-built-it', text: 'Why we built it' },
-  { slug: 'how-the-calculator-works', text: 'How the calculator works' },
-  { slug: 'accuracy', text: 'Accuracy' },
-  { slug: 'privacy', text: 'Privacy' },
-  { slug: 'not-financial-advice', text: 'Not financial advice' },
-  { slug: 'sources', text: 'Sources' },
-];
+const entry = await getEntry('pages', 'about');
+const { Content, headings } = await entry.render();
+const { title, description, heroLead, image, takeaways } = entry.data;
 ---
-<StaticPage
-  title="About salary-calc.co.uk"
-  description="salary-calc.co.uk is a free, independent UK take-home pay calculator built on confirmed 2026/27 HMRC rates and thresholds."
-  heroLead="salary-calc.co.uk is a free, independent UK take-home pay calculator built on confirmed 2026/27 HMRC rates and thresholds."
-  toc={toc}
->
-  <div class="key-takeaways-box mb-4">
-    <h2 class="key-takeaways-title mb-3">Key Takeaways</h2>
-    <ul class="mb-0">
-      <li class="mb-2">Free UK take-home pay calculator for the 2026/27 tax year (6 April 2026 – 5 April 2027).</li>
-      <li class="mb-2">Covers England, Wales, Northern Ireland and Scotland, including all six Scottish tax bands.</li>
-      <li class="mb-2">Every rate and threshold is taken directly from HMRC and GOV.UK — nothing is estimated.</li>
-      <li class="mb-0">Runs entirely in your browser — the salary you enter is never sent to our servers.</li>
-    </ul>
-  </div>
-
-  <h2 id="what-we-do">What we do</h2>
-  <p>salary-calc.co.uk is a free UK take-home pay calculator for the <strong>2026/27 tax year</strong> (6 April 2026 – 5 April 2027). It works out what you actually keep after Income Tax, National Insurance, pension contributions and student loan repayments — covering England, Wales, Northern Ireland and Scotland. No sign-up, no email capture, just a number you can trust.</p>
-
-  <h2 id="the-numbers-behind-the-calculator">The numbers behind the calculator</h2>
-  <p>Every calculation is built from the confirmed 2026/27 rates and thresholds:</p>
-  <table>
-    <thead>
-      <tr><th>Threshold / Rate</th><th>2026/27 figure</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Personal Allowance</td><td>£12,570 (frozen until April 2031)</td></tr>
-      <tr><td>Basic Rate</td><td>20% on £12,570–£50,270</td></tr>
-      <tr><td>Higher Rate</td><td>40% on £50,271–£125,140</td></tr>
-      <tr><td>Additional Rate</td><td>45% above £125,140</td></tr>
-      <tr><td>Personal Allowance taper</td><td>Reduced £1 per £2 earned over £100,000, gone by £125,140</td></tr>
-      <tr><td>Employee National Insurance</td><td>8% on £12,570–£50,270, then 2% above</td></tr>
-      <tr><td>Employer National Insurance</td><td>15% above £5,000, no upper limit</td></tr>
-      <tr><td>Scottish Income Tax</td><td>Separate six-band structure, 19%–48%</td></tr>
-      <tr><td>Student Loan Plans</td><td>1, 2, 4, 5 and Postgraduate</td></tr>
-    </tbody>
-  </table>
-  <p>Following the Autumn Budget on 26 November 2025, the Personal Allowance, higher-rate threshold and main National Insurance thresholds are now frozen until April 2031, rather than ending in 2027/28. Because these thresholds have been fixed since 2021/22, more income is pulled into higher bands each year as wages rise — this is often called fiscal drag, and it's a big part of why take-home pay feels harder to predict than it used to.</p>
-  <p>The taper between £100,000 and £125,140 is worth flagging on its own: losing £1 of Personal Allowance for every £2 earned, on top of 40% Higher Rate tax and 2% National Insurance, produces a marginal rate of around 60% — often called the "60% tax trap." It affects roughly 1.2 million people in that income band, and our calculator shows it explicitly rather than just labelling it "Higher Rate."</p>
-
-  <h2 id="why-we-built-it">Why we built it</h2>
-  <p>Most salary calculators are black boxes — you put in a number, a result appears, and there's no way to check the working. We wanted something different: a calculator where every rate and threshold traces back to an official HMRC source, and where the logic behind the number is written down in plain English rather than buried in a spreadsheet.</p>
-
-  <h2 id="how-the-calculator-works">How the calculator works</h2>
-  <p>The engine follows HMRC's published order of operations for PAYE — gross pay, pension contributions (salary sacrifice or relief at source), Personal Allowance, Income Tax, National Insurance, then student loan repayments. It supports:</p>
-  <ul>
-    <li>Income Tax across all UK regions, including the full set of Scottish bands</li>
-    <li>Employee and Employer National Insurance</li>
-    <li>Student Loan Plans 1, 2, 4, 5 and Postgraduate</li>
-    <li>Both salary sacrifice and relief-at-source pensions</li>
-    <li>Breakdown by hour, day, week, month and year</li>
-  </ul>
-  <p>We update the site whenever HMRC publishes new figures — typically at the Spring or Autumn Budget, effective from the following 6 April.</p>
-
-  <h2 id="accuracy">Accuracy</h2>
-  <p>We test the calculator against real payroll scenarios, including the edge cases that trip up simpler tools: the Personal Allowance taper between £100,000 and £125,140, the Scottish Intermediate Rate boundary, and interactions between student loan deductions and other thresholds.</p>
-
-  <h2 id="privacy">Privacy</h2>
-  <p>The calculator runs entirely in your browser. The salary figures you enter aren't sent to our servers or stored anywhere.</p>
-
-  <h2 id="not-financial-advice">Not financial advice</h2>
-  <p>salary-calc.co.uk is an informational tool. It's built to be accurate, but it isn't a substitute for advice from a qualified accountant or tax adviser, particularly if your situation involves self-employment, multiple income sources, or benefits in kind. We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk.</p>
-
-  <h2 id="sources">Sources</h2>
-  <ul>
-    <li><a href="https://www.gov.uk/income-tax-rates" target="_blank" rel="noopener">GOV.UK — Income Tax rates and Personal Allowances</a></li>
-    <li><a href="https://www.gov.uk/national-insurance/how-much-you-pay" target="_blank" rel="noopener">GOV.UK — National Insurance rates</a></li>
-    <li><a href="https://www.gov.uk/scottish-income-tax" target="_blank" rel="noopener">GOV.UK — Scottish Income Tax</a></li>
-    <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-10618/" target="_blank" rel="noopener">House of Commons Library — Direct taxes: rates and allowances 2026/27</a></li>
-  </ul>
+<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
+  <Content />
 </StaticPage>

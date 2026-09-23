@@ -1,24 +1,32 @@
 ---
 // Shared layout for static informational pages (About, Contact, Terms,
-// Privacy Policy, etc). Reuses the same hero-banner + TOC-sidebar UI as
-// BlogPost.astro, minus the blog-only bits (updated date, related posts,
-// author/category/tags footer) which don't apply to a static page.
+// Privacy Policy, Methodology, etc), driven by src/content/pages/*.md —
+// same idea as BlogPost.astro for blog posts. No "Updated on" date, no
+// related-posts, no author/tags footer, since those are blog-only concepts.
 import Layout from './Layout.astro';
 import { withBase } from '../lib/url.js';
 
-interface TocItem { slug: string; text: string }
+interface Heading { depth: number; slug: string; text: string }
 
 interface Props {
   title: string;
   description: string;
   heroLead?: string;
-  toc?: TocItem[];
+  image?: string;
+  takeaways?: string[];
+  headings?: Heading[];
 }
 
-const { title, description, heroLead, toc = [] } = Astro.props;
+const { title, description, heroLead, image, takeaways = [], headings = [] } = Astro.props;
+// Only top-level (##) headings go in the TOC, same rule as blog posts.
+const toc = headings.filter((h) => h.depth === 2);
+
+const imageUrl = image
+  ? (/^https?:\/\//i.test(image) ? image : withBase(image))
+  : null;
 ---
 <Layout title={`${title} | salary-calc.co.uk`} description={description}>
-  <div class="post-hero">
+  <div class={`post-hero${imageUrl ? ' has-thumb' : ''}`}>
     <div class="container py-4 h-100 post-hero-inner">
       <p class="post-hero-breadcrumb small mb-3">
         <a href={withBase()}>Home</a> / {title}
@@ -26,6 +34,12 @@ const { title, description, heroLead, toc = [] } = Astro.props;
       <h1 class="post-hero-title mt-2">{title}</h1>
       {heroLead && <p class="post-hero-lead mb-0">{heroLead}</p>}
     </div>
+
+    {imageUrl && (
+      <div class="post-hero-thumb-wrap">
+        <img src={imageUrl} alt={title} class="post-hero-thumb" loading="eager" />
+      </div>
+    )}
   </div>
 
   <main class="container py-5" style="max-width:1200px;">
@@ -44,6 +58,17 @@ const { title, description, heroLead, toc = [] } = Astro.props;
       )}
 
       <div class={`col-12 order-1 order-lg-2 ${toc.length > 0 ? 'col-lg-9' : ''}`} style={toc.length === 0 ? 'max-width:900px;' : ''}>
+        {takeaways.length > 0 && (
+          <div class="key-takeaways-box mb-4">
+            <h2 class="key-takeaways-title mb-3">Key Takeaways</h2>
+            <ul class="mb-0">
+              {takeaways.map((t) => (
+                <li class="mb-2">{t}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <article class="blog-article">
           <slot />
         </article>
@@ -59,10 +84,22 @@ const { title, description, heroLead, toc = [] } = Astro.props;
     overflow: hidden;
   }
   .post-hero-inner{ position: relative; z-index: 2; max-width: 900px; }
+  .post-hero-inner.has-thumb{ padding-right: 44%; }
   .post-hero-breadcrumb a{ color:rgba(255,255,255,0.75); text-decoration:none; }
   .post-hero-breadcrumb a:hover{ color:#fff; text-decoration:underline; }
   .post-hero-title{ color:#fff; font-size:2.2rem; margin-bottom:0.5rem; }
   .post-hero-lead{ color:rgba(255,255,255,0.85); font-size:1.05rem; max-width:65ch; }
+  .post-hero-thumb-wrap{
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    height: 100%;
+    width: 42%;
+    z-index: 1;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14%);
+    mask-image: linear-gradient(to right, transparent 0, #000 14%);
+  }
+  .post-hero-thumb{ width:100%; height:100%; object-fit:cover; display:block; }
 
   .blog-article :global(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; }
   .blog-article :global(h3) { font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; }
@@ -71,6 +108,7 @@ const { title, description, heroLead, toc = [] } = Astro.props;
   .blog-article :global(li) { margin-bottom: 0.35rem; }
   .blog-article :global(a) { color: var(--govblue); text-decoration: underline; }
   .blog-article :global(strong) { font-weight: 700; }
+  .blog-article :global(img) { max-width: 100%; height: auto; }
 
   .blog-article :global(table) {
     width: 100%;
@@ -116,5 +154,19 @@ const { title, description, heroLead, toc = [] } = Astro.props;
 
   @media (min-width: 992px){
     .post-toc-box{ position:sticky; top:1rem; }
+  }
+
+  @media (max-width: 991.98px){
+    .post-hero{ height:auto; overflow:visible; }
+    .post-hero-inner.has-thumb{ padding-right: 0; padding-bottom: 1rem; }
+    .post-hero-thumb-wrap{
+      position: static;
+      width: 100%;
+      height: 220px;
+      margin-top: 1.5rem;
+      border-radius: 10px !important;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
   }
 </style>

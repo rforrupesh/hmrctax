@@ -1,9 +1,9 @@
 ---
-// Content lives in src/content/pages/contact.md — edit that file, not this one.
+// Content lives in src/content/pages/methodology.md — edit that file, not this one.
 import { getEntry } from 'astro:content';
 import StaticPage from '../../layouts/StaticPage.astro';
 
-const entry = await getEntry('pages', 'contact');
+const entry = await getEntry('pages', 'methodology');
 const { Content, headings } = await entry.render();
 const { title, description, heroLead, image, takeaways } = entry.data;
 ---

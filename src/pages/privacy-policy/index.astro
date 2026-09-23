@@ -1,13 +1,12 @@
 ---
+// Content lives in src/content/pages/privacy-policy.md — edit that file, not this one.
+import { getEntry } from 'astro:content';
 import StaticPage from '../../layouts/StaticPage.astro';
-import { withBase } from '../../lib/url.js';
+
+const entry = await getEntry('pages', 'privacy-policy');
+const { Content, headings } = await entry.render();
+const { title, description, heroLead, image, takeaways } = entry.data;
 ---
-<StaticPage
-  title="Privacy Policy"
-  description="Privacy policy for salary-calc.co.uk."
-  heroLead="How salary-calc.co.uk handles your data — in short, we don't collect the numbers you type in."
->
-  <p>This calculator runs entirely in your browser. The salary figures you enter are not sent to, or stored on, our servers.</p>
-  <p>We may use third-party services such as analytics and advertising providers, which can collect standard technical data (such as browser type and IP address) in line with their own privacy policies.</p>
-  <p>If you have any questions about this policy, please <a href={withBase(`contact/`)}>contact us</a>.</p>
+<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
+  <Content />
 </StaticPage>

@@ -1,12 +1,12 @@
 ---
+// Content lives in src/content/pages/terms.md — edit that file, not this one.
+import { getEntry } from 'astro:content';
 import StaticPage from '../../layouts/StaticPage.astro';
+
+const entry = await getEntry('pages', 'terms');
+const { Content, headings } = await entry.render();
+const { title, description, heroLead, image, takeaways } = entry.data;
 ---
-<StaticPage
-  title="Terms & Conditions"
-  description="Terms and conditions for using salary-calc.co.uk."
-  heroLead="Please read these terms before using the calculator or any other part of this site."
->
-  <p>salary-calc.co.uk provides estimates only, based on publicly available UK tax thresholds and rates for the 2026/27 tax year. We make no guarantee of accuracy and accept no liability for decisions made based on figures shown on this site.</p>
-  <p>This is not tax advice. For advice specific to your circumstances, consult a qualified accountant or refer to official guidance at <a href="https://www.gov.uk" target="_blank" rel="noopener">gov.uk</a>.</p>
-  <p>We are not affiliated with HM Revenue &amp; Customs, HM Government, or gov.uk.</p>
+<StaticPage title={title} description={description} heroLead={heroLead} image={image} takeaways={takeaways} headings={headings}>
+  <Content />
 </StaticPage>
