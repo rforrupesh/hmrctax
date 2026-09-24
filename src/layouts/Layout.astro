@@ -142,9 +142,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </div>
 </div>
 
-<nav class="border-bottom bg-white">
-  <div class="container">
-    <ul class="nav" style="overflow-x:auto; flex-wrap:nowrap; white-space:nowrap;">
+<nav class="border-bottom bg-white site-nav">
+  <div class="container d-flex align-items-center justify-content-between">
+    <button type="button" class="nav-toggle d-md-none" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--govblack)" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav" id="navMenu">
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase()} style="color:var(--govblack);">Home</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-calculator/`)} style="color:var(--govblack);">By Salary</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-guides/`)} style="color:var(--govblack);">Guides</a></li>
@@ -154,6 +157,38 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </ul>
   </div>
 </nav>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const navMenu = document.getElementById('navMenu');
+  navToggle?.addEventListener('click', () => {
+    const open = navMenu?.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+<style>
+  .site-nav .container{ position: relative; padding-top:0.4rem; padding-bottom:0.4rem; }
+  .nav-toggle{
+    background:none; border:2px solid var(--govblack); border-radius:0 !important;
+    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; margin-right:0.5rem;
+  }
+  #navMenu{ flex-wrap:nowrap; }
+  @media (max-width: 767.98px){
+    .site-nav .container{ flex-wrap:wrap; }
+    #navMenu{
+      display:none;
+      flex-direction:column;
+      width:100%;
+      order:3;
+      padding-bottom:0.5rem;
+    }
+    #navMenu.is-open{ display:flex; }
+    #navMenu .nav-item{ width:100%; }
+    #navMenu .nav-link{ padding-top:0.6rem; padding-bottom:0.6rem; border-top:1px solid var(--govborder); }
+  }
+</style>
 
 <slot />
 
