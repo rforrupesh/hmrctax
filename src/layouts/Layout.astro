@@ -150,6 +150,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <nav class="border-bottom bg-white site-nav">
   <div class="container">
     <ul class="nav" id="navMenu">
+      <li class="nav-drawer-head d-md-none">
+        <a href={withBase()} class="fw-bold text-decoration-none d-flex align-items-center gap-2" style="font-size:1.05rem; color:var(--govblack);">
+          <svg width="22" height="22" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="14" width="36" height="22" fill="none" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="2" y1="14" x2="2" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="9.7" y1="14" x2="9.7" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="17.3" y1="14" x2="17.3" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="25" y1="14" x2="25" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="32.7" y1="14" x2="32.7" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <line x1="38" y1="14" x2="38" y2="36" stroke="var(--govblack)" stroke-width="2.2"/>
+            <path d="M2 14L8 3h6l2 5 2-5h6l6 11" stroke="var(--govblack)" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+          </svg>
+          salary-calc<span style="color:#00703c;">.co.uk</span>
+        </a>
+        <button type="button" class="nav-close" id="navClose" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--govblack)" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        </button>
+      </li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase()} style="color:var(--govblack);">Home</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-calculator/`)} style="color:var(--govblack);">By Salary</a></li>
       <li class="nav-item"><a class="nav-link fw-bold px-2 px-md-3" href={withBase(`tax-guides/`)} style="color:var(--govblack);">Guides</a></li>
@@ -163,9 +181,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 <script>
   const navToggle = document.getElementById('navToggle');
+  const navClose = document.getElementById('navClose');
   const navMenu = document.getElementById('navMenu');
   const navOverlay = document.getElementById('navOverlay');
 
+  function openMenu() {
+    navMenu?.classList.add('is-open');
+    navOverlay?.classList.add('is-open');
+    navToggle?.setAttribute('aria-expanded', 'true');
+  }
   function closeMenu() {
     navMenu?.classList.remove('is-open');
     navOverlay?.classList.remove('is-open');
@@ -173,10 +197,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
 
   navToggle?.addEventListener('click', () => {
-    const open = navMenu?.classList.toggle('is-open');
-    navOverlay?.classList.toggle('is-open', !!open);
-    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    navMenu?.classList.contains('is-open') ? closeMenu() : openMenu();
   });
+  navClose?.addEventListener('click', closeMenu);
   navOverlay?.addEventListener('click', closeMenu);
 </script>
 
@@ -197,6 +220,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   }
   .nav-overlay.is-open{ display:block; opacity:1; }
 
+  .nav-drawer-head{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    padding:0.5rem 1rem 1rem;
+    border-bottom:1px solid var(--govborder);
+    margin-bottom:0.5rem;
+  }
+  .nav-close{
+    background:none; border:2px solid var(--govblack); border-radius:0 !important;
+    width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+
   @media (max-width: 767.98px){
     .site-nav{ display:block !important; border-bottom:none !important; }
     .site-nav .container{ padding:0 !important; max-width:none !important; }
@@ -213,10 +250,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       transform:translateX(-100%);
       transition:transform 0.25s ease;
       overflow-y:auto;
-      padding-top:calc(1rem + env(safe-area-inset-top,0px));
+      padding-top:env(safe-area-inset-top,0px);
       box-shadow:2px 0 12px rgba(0,0,0,0.15);
     }
     .site-nav #navMenu.is-open{ display:flex; transform:translateX(0); }
+    .nav-drawer-head{ display:flex; }
+    #navMenu .nav-item{ padding:0 1rem; }
   }
   @media (min-width: 768px){
     .site-nav{ display:block; }
