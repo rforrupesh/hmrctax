@@ -30,7 +30,7 @@ const { tag } = Astro.params;
 const { label, posts } = Astro.props;
 const title = label.replace(/-/g, ' ');
 ---
-<Layout title={`${title} guides | salary-calc.co.uk`} description={`UK tax guides tagged "${title}".`}>
+<Layout title={`${title} guides | salary-calc.co.uk`} description={`UK tax guides tagged "${title}".`} noindex={true}>
   <main class="container blog-index py-5 pb-5" style="max-width:1140px;">
     <p class="small text-muted mb-2"><a href={withBase(`tax-guides/`)}>Tax Guides</a> &gt; Tag</p>
     <h1 class="blog-index-heading text-capitalize">{title}</h1>

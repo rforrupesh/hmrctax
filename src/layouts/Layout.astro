@@ -2,7 +2,7 @@
 import { withBase } from '../lib/url.js';
 import { SOCIAL_LINKS } from '../lib/social.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-const { title, description, ogImage } = Astro.props;
+const { title, description, ogImage, noindex } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 <!DOCTYPE html>
@@ -12,6 +12,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonicalURL} />
 <link rel="icon" href={withBase(`favicon.svg`)} />
 <meta property="og:title" content={title} />
