@@ -5,6 +5,7 @@
 // related-posts, no author/tags footer, since those are blog-only concepts.
 import Layout from './Layout.astro';
 import { withBase } from '../lib/url.js';
+import { imgSrcset } from '../lib/img.js';
 import { getDominantColor, heroGradientFrom } from '../lib/dominantColor.js';
 
 interface Heading { depth: number; slug: string; text: string }
@@ -43,7 +44,7 @@ const heroGradient = heroGradientFrom(dominantColor);
 
     {imageUrl && (
       <div class="post-hero-thumb-wrap">
-        <img src={imageUrl} alt={title} class="post-hero-thumb" loading="eager" />
+        <img src={imageUrl} srcset={imgSrcset(image)} sizes="(max-width: 768px) 100vw, 42vw" alt={title} class="post-hero-thumb" loading="eager" fetchpriority="high" />
       </div>
     )}
   </div>

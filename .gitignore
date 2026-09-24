@@ -4,3 +4,4 @@ dist/
 .env
 .DS_Store
 public/og/*.png
+public/images/*-[0-9]*w.webp
