@@ -14,4 +14,7 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://rforrupesh.github.io',
   base: '/hmrctax/',
+  build: {
+    inlineStylesheets: 'always',
+  },
 });
