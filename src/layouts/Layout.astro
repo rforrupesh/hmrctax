@@ -159,14 +159,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </ul>
   </div>
 </nav>
+<div class="nav-overlay d-md-none" id="navOverlay"></div>
 
 <script>
   const navToggle = document.getElementById('navToggle');
   const navMenu = document.getElementById('navMenu');
+  const navOverlay = document.getElementById('navOverlay');
+
+  function closeMenu() {
+    navMenu?.classList.remove('is-open');
+    navOverlay?.classList.remove('is-open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+  }
+
   navToggle?.addEventListener('click', () => {
     const open = navMenu?.classList.toggle('is-open');
+    navOverlay?.classList.toggle('is-open', !!open);
     navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
+  navOverlay?.addEventListener('click', closeMenu);
 </script>
 
 <style>
@@ -175,12 +186,38 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     width:36px; height:36px; display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
   }
-  .site-nav #navMenu{
+  .nav-overlay{
     display:none;
-    flex-direction:column;
-    width:100%;
+    position:fixed;
+    inset:0;
+    background:rgba(11,12,12,0.5);
+    z-index:1040;
+    opacity:0;
+    transition:opacity 0.25s ease;
   }
-  .site-nav #navMenu.is-open{ display:flex; }
+  .nav-overlay.is-open{ display:block; opacity:1; }
+
+  @media (max-width: 767.98px){
+    .site-nav{ display:block !important; border-bottom:none !important; }
+    .site-nav .container{ padding:0 !important; max-width:none !important; }
+    .site-nav #navMenu{
+      position:fixed;
+      top:0; left:0;
+      height:100vh;
+      width:75%;
+      max-width:320px;
+      background:#fff;
+      flex-direction:column;
+      flex-wrap:nowrap;
+      z-index:1050;
+      transform:translateX(-100%);
+      transition:transform 0.25s ease;
+      overflow-y:auto;
+      padding-top:calc(1rem + env(safe-area-inset-top,0px));
+      box-shadow:2px 0 12px rgba(0,0,0,0.15);
+    }
+    .site-nav #navMenu.is-open{ display:flex; transform:translateX(0); }
+  }
   @media (min-width: 768px){
     .site-nav{ display:block; }
     .site-nav #navMenu{
