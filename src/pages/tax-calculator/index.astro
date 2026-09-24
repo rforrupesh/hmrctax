@@ -23,7 +23,7 @@ const popular = [20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 
     <div class="my-4 p-4" style="background:var(--govgrey); border-left:4px solid var(--govgreen);">
       <h2 class="h6 fw-bold mb-3">Most searched salaries</h2>
       {popular.map(s => (
-        <a href={withBase(`tax-calculator/${s}-annually/`)} class="d-inline-block fw-bold text-decoration-none me-2 mb-2 px-3 py-1" style="background:#fff; border:2px solid var(--govblack); color:var(--govblack); font-size:0.9rem;">
+        <a href={withBase(`tax-calculator/${s}-annually/`)} class="d-inline-block fw-bold text-decoration-none me-2 mb-2 px-3 py-1 salary-pill" style="background:#fff; border:2px solid var(--govblack); color:var(--govblack); font-size:0.9rem;">
           {fmt(s)}
         </a>
       ))}
@@ -40,7 +40,7 @@ const popular = [20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 
         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-2">
           {list.map(s => (
             <div class="col">
-              <a href={withBase(`tax-calculator/${s}-annually/`)} class="d-block py-1" style="border-bottom:1px solid var(--govborder);">{fmt(s)} a year</a>
+              <a href={withBase(`tax-calculator/${s}-annually/`)} class="d-block px-2 py-2 salary-link" style="text-decoration:none; color:var(--govblack);">{fmt(s)} a year</a>
             </div>
           ))}
         </div>
@@ -48,3 +48,11 @@ const popular = [20000, 25000, 30000, 35000, 40000, 45000, 50000, 55000, 60000, 
     ))}
   </main>
 </Layout>
+
+<style>
+  .salary-pill{ transition: background 0.15s ease, color 0.15s ease; }
+  .salary-pill:hover{ background:var(--govblack) !important; color:#fff !important; }
+
+  .salary-link{ border-bottom:1px solid var(--govborder); border-radius:6px; transition: background 0.15s ease; }
+  .salary-link:hover{ background:var(--govgrey); text-decoration:underline; }
+</style>
