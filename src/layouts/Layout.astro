@@ -141,7 +141,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       </svg>
       salary-calc<span style="color:var(--govyellow);">.co.uk</span>
     </a>
-    <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle menu">
+    <button type="button" class="nav-toggle d-md-none" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
   </div>
@@ -181,6 +181,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     width:100%;
   }
   .site-nav #navMenu.is-open{ display:flex; }
+  @media (min-width: 768px){
+    .site-nav{ display:block; }
+    .site-nav #navMenu{
+      display:flex;
+      flex-direction:row;
+      width:auto;
+    }
+    .site-nav #navMenu .nav-item{ width:auto; }
+    .site-nav #navMenu .nav-link{ border-top:none; }
+  }
   #navMenu .nav-item{ width:100%; }
   #navMenu .nav-link{ padding-top:0.6rem; padding-bottom:0.6rem; border-top:1px solid var(--govborder); }
 </style>
