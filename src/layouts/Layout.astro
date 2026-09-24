@@ -189,14 +189,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     navMenu?.classList.add('is-open');
     navOverlay?.classList.add('is-open');
     navToggle?.setAttribute('aria-expanded', 'true');
-    if (navToggle) navToggle.style.visibility = 'hidden';
+    navToggle?.classList.add('is-hidden');
     document.body.style.overflow = 'hidden';
   }
   function closeMenu() {
     navMenu?.classList.remove('is-open');
     navOverlay?.classList.remove('is-open');
     navToggle?.setAttribute('aria-expanded', 'false');
-    if (navToggle) navToggle.style.visibility = 'visible';
+    navToggle?.classList.remove('is-hidden');
     document.body.style.overflow = '';
     navToggle?.blur();
   }
@@ -213,7 +213,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     background:none; border:2px solid #fff; border-radius:0 !important;
     width:36px; height:36px; display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
   }
+  .nav-toggle:active{ transform: scale(0.88); }
+  .nav-toggle.is-hidden{ opacity:0; transform: scale(0.7) rotate(90deg); pointer-events:none; }
   .nav-overlay{
     display:none;
     position:fixed;
@@ -237,8 +240,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     background:#fff; border:2px solid var(--govblack); border-radius:0 !important;
     width:36px; height:36px; display:flex; align-items:center; justify-content:center;
     flex-shrink:0; cursor:pointer;
+    transition: transform 0.2s ease, background 0.15s ease;
   }
   .nav-close:hover{ background:var(--govgrey); }
+  .nav-close:hover svg{ transform: rotate(90deg); }
+  .nav-close:active{ transform: scale(0.88); }
+  .nav-close svg{ transition: transform 0.2s ease; }
 
   @media (max-width: 767.98px){
     .site-nav{ display:block !important; border-bottom:none !important; }
