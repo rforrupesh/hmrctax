@@ -6,7 +6,6 @@
 import Layout from './Layout.astro';
 import PostGrid from '../components/PostGrid.astro';
 import { withBase } from '../lib/url.js';
-import { imgSrcset } from '../lib/img.js';
 import { slugify, categoryOf, authorOf, formatDate as fmtDate } from '../lib/blog.js';
 import { getDominantColor, heroGradientFrom } from '../lib/dominantColor.js';
 import { getCollection, type CollectionEntry } from 'astro:content';
@@ -135,9 +134,6 @@ const heroGradient = heroGradientFrom(dominantColor);
           alt={title}
           class="post-hero-thumb"
           loading="eager"
-          srcset={imgSrcset(post.data.image)}
-          sizes="(max-width: 768px) 100vw, 42vw"
-          fetchpriority="high"
         />
       </div>
     )}
