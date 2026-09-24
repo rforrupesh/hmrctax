@@ -17,5 +17,8 @@
     "@napi-rs/canvas": "^0.1.65",
     "astro": "^5.7.0",
     "bootstrap": "^5.3.3"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^8.0.0"
   }
 }
