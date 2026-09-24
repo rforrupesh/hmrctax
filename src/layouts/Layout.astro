@@ -265,9 +265,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       overflow-y:auto;
       padding-top:env(safe-area-inset-top,0px);
       padding-bottom:1rem;
+    }
+    .site-nav #navMenu.is-open{
+      display:flex;
+      transform:translateX(0);
       box-shadow:2px 0 12px rgba(0,0,0,0.15);
     }
-    .site-nav #navMenu.is-open{ display:flex; transform:translateX(0); }
     .nav-drawer-head{ display:flex; }
     #navMenu .nav-item{ padding:0 0.5rem; }
     #navMenu .nav-link{
