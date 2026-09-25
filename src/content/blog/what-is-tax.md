@@ -40,6 +40,14 @@ For an employee, the process may look like this:
 4. National Insurance may also be deducted.
 5. You receive your remaining amount as take-home pay.
 
+<!--
+Source - https://stackoverflow.com/q/41604263
+Posted by zjffdu, modified by community. See post 'Timeline' for change history
+Retrieved 2026-09-25, License - CC BY-SA 4.0
+-->
+
+![image](https://rforrupesh.github.io/hmrctax/images/what-is-tax.webp)
+
 For example, someone earning £40,000 a year does not normally pay Income Tax on the entire £40,000 if they qualify for the standard Personal Allowance.
 
 ## What Is Income Tax?
